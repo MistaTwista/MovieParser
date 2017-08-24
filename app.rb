@@ -27,9 +27,9 @@ movies
 
 puts "All directors"
 movies
-  .select{ |movie| !movie[:director].nil?  }
-  .map{ |movie| movie[:director].split.last }
-  .uniq.sort.each{ |d| puts d }
+  .map{ |movie| movie[:director] }
+  .sort_by{ |director| director.split.last  }
+  .uniq.each{ |d| puts d }
 
 puts "Non USA Movies"
 puts movies.select{ |m| m['country'] != 'USA' }.count
