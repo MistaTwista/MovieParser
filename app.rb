@@ -8,7 +8,6 @@ def format_movie(movie)
   "#{movie[:name]} (#{movie[:year]}; #{movie[:style]}) - #{movie[:length]}"
 end
 
-  #.map { |m| Hash[MOVIE_FIELDS.zip(m)] }
 movies = IO.readlines(filename).map{ |l| l.strip.split('|') }
   .map { |m| MOVIE_FIELDS.zip(m).to_h }
 
