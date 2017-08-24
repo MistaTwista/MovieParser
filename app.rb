@@ -12,8 +12,6 @@ end
 movies = IO.readlines(filename).map{ |l| l.strip.split('|') }
   .map { |m| MOVIE_FIELDS.zip(m).to_h }
 
-p movies.last[:url]
-
 puts "Five longest"
 movies
   .sort_by{ |m| m[:length].to_i }
