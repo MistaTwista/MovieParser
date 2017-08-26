@@ -7,7 +7,7 @@ require 'date'
 require 'irb'
 
 MOVIE_FIELDS = %i[url name year country
-    release_date style length rate director cast].freeze
+    date style length rate director cast].freeze
 
 def format_movie(movie)
   "#{movie.name} (#{movie.year}; #{movie.style}) - #{movie.length}"
@@ -44,15 +44,11 @@ puts movies.select{ |m| m.country != 'USA' }.count
 
 title 'Month stats'
 stats = movies
-  .select{ |movie| movie.release_date.match?(/\d{4}-(0[1-9]|1[0-2])/) }
-  .reduce(Array.new(12, 0)) { |acc, movie|
-    month = movie.release_date.split('-')[1].to_i - 1
-    acc[month] += 1
-    acc
-  }
-  .map.with_index{ |m, i|
-    month = Date.strptime((i+1).to_s, '%m').strftime(format='%B')
-    [month, m]
-  }.to_h
+  .map{ |m| Date.strptime(m.date, '%Y-%m').mon rescue nil }
+  .compact
+  .group_by(&:itself)
+  .sort
+  .map {|month, movies| [Date::MONTHNAMES[month], movies.count]}
+  .to_h
 
 puts stats
