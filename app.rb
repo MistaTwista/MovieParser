@@ -28,16 +28,13 @@ movies
 
 title '10 earliest comedies'
 movies
-  .select{ |movie| movie.style.split(',').include? 'Comedy' }
+  .select{ |m| m.style.split(',').include? 'Comedy' }
   .sort_by{ |m| m.year.to_i }
   .first(5)
-  .each{ |movie| puts format_movie(movie) }
+  .each{ |m| puts format_movie(m) }
 
 title 'All directors'
-movies
-  .map{ |movie| movie.director }
-  .sort_by{ |director| director.split.last  }
-  .uniq.each{ |d| puts d }
+movies.map(&:director).sort_by{ |d| d.split.last  }.uniq.each{ |d| puts d }
 
 title 'Non USA Movies'
 puts movies.select{ |m| m.country != 'USA' }.count
