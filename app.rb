@@ -4,6 +4,7 @@ abort("#{filename} not found or can't be read") unless File.readable?(filename)
 require 'csv'
 require 'ostruct'
 require 'date'
+require 'irb'
 
 MOVIE_FIELDS = %i[url name year country
     release_date style length rate director cast].freeze
@@ -16,10 +17,8 @@ def title(text)
   puts "\n\"#{text.upcase}\""
 end
 
-movies = []
-CSV.foreach(filename, { col_sep: '|' }) do |row|
-  movies << OpenStruct.new(MOVIE_FIELDS.zip(row).to_h)
-end
+movies = CSV.foreach(filename, { col_sep: '|', headers: MOVIE_FIELDS })
+  .map { |row| OpenStruct.new(row.to_h) }
 
 title 'Five longest'
 movies
@@ -44,7 +43,6 @@ title 'Non USA Movies'
 puts movies.select{ |m| m.country != 'USA' }.count
 
 title 'Month stats'
-months = %i[january february march april may june july august september october november december]
 stats = movies
   .select{ |movie| movie.release_date.match?(/\d{4}-(0[1-9]|1[0-2])/) }
   .reduce(Array.new(12, 0)) { |acc, movie|
