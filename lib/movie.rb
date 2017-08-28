@@ -14,8 +14,12 @@ class Movie
     to_h[:genre].include?(genre)
   end
 
+  def month
+    Date::MONTHNAMES[Date.strptime(to_h[:date], "%Y-%m").mon] rescue nil
+  end
+
   def year
-    to_h[:year].to_i
+    Date.strptime(to_h[:year], "%Y").year rescue nil
   end
 
   def length
@@ -39,7 +43,7 @@ class Movie
   end
 
   def to_s
-    "#{title} (#{year}; #{genre}) - #{length}"
+    "#{title} (#{year}; #{genre}) - #{length} min"
   end
 
   private

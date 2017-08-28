@@ -1,10 +1,15 @@
 require_relative 'movie'
+require_relative 'csv_to_hash'
 
 class MovieCollection
   attr_reader :movies
 
-  def initialize(collection, movie_class: Movie)
-    @movies = collection.map{ |movie| movie_class.new(movie) }
+  MOVIE_FIELDS = %i[url title year country date
+    genre length rate director actors].freeze
+
+  def initialize(filename, movie_class: Movie)
+    @movies = CsvToHash.new(filename, MOVIE_FIELDS).data
+      .map{ |movie| movie_class.new(movie) }
   end
 
   def all
@@ -12,18 +17,22 @@ class MovieCollection
   end
 
   def sort_by(field)
-    begin
-      all.sort_by(&field)
-    rescue Exception => e
-      puts "Collection can't be sorted by #{field}, some data is not valid"
-    end
+    all.map do |movie|
+      field_data = movie.send(field) rescue nil
+      field_data.nil? ? nil : movie
+    end.compact.sort_by(&field)
   end
 
-  def filter(*fields)
-    all.select{ |movie| fields.map{ |k, v| movie.send(k).include?(v) } }
+  def filter(field)
+    key, value = field.first
+    all.select{ |movie| movie.send(key).to_s.include?(value.to_s) }
   end
 
-  def testable
-    42
+  def stats(field)
+    all
+      .map{ |m| m.send(field) rescue nil }
+      .compact.flatten
+      .group_by(&:itself)
+      .map{ |field, data| [field, data.count] }.to_h
   end
 end
