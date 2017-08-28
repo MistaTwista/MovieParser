@@ -12,6 +12,12 @@ puts_title 'All movies'
 puts movies.all.count
 puts_title 'Sort_by :length'
 puts movies.sort_by(:length).last(5)
+puts_title 'Has genre?'
+begin
+  puts movies.sort_by(:length).last.has_genre?('Comedy')
+rescue RuntimeError => error
+  puts error.message
+end
 puts_title 'Filter director: "Nolan"'
 puts movies.filter(director: 'Nolan')
 puts_title 'Stats Country'

@@ -12,7 +12,7 @@ class Movie
 
   def has_genre?(genre)
     result = to_h[:genre].include?(genre)
-    raise 'No such genre' unless result
+    raise "'#{title}' is not in genre #{genre}" unless result
     result
   end
 
