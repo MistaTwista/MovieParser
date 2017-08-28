@@ -11,7 +11,9 @@ class Movie
   end
 
   def has_genre?(genre)
-    to_h[:genre].include?(genre)
+    result = to_h[:genre].include?(genre)
+    raise 'No such genre' unless result
+    result
   end
 
   def month

@@ -21,7 +21,9 @@ class TestMovie < Test::Unit::TestCase
 
   def test_has_genre
     assert_equal(true, @movie.has_genre?('Drama'))
-    assert_equal(false, @movie.has_genre?('Comedy'))
+    assert_raise(RuntimeError) do
+      @movie.has_genre?('Comedy')
+    end
   end
 
   def test_title
