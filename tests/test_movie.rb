@@ -19,6 +19,11 @@ class TestMovie < Test::Unit::TestCase
     @movie = Movie.new(movie)
   end
 
+  def test_has_genre
+    assert_equal(true, @movie.has_genre?('Drama'))
+    assert_equal(false, @movie.has_genre?('Comedy'))
+  end
+
   def test_title
     assert_equal('Anatomy of a Murder', @movie.title)
   end
