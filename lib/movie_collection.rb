@@ -18,21 +18,21 @@ class MovieCollection
 
   def sort_by(field)
     all.map do |movie|
-      field_data = movie.send(field) rescue nil
+      field_data = movie.public_send(field) rescue nil
       field_data.nil? ? nil : movie
     end.compact.sort_by(&field)
   end
 
   def filter(field)
     key, value = field.first
-    all.select{ |movie| movie.send(key).to_s.include?(value.to_s) }
+    all.select{ |movie| movie.public_send(key).to_s.include?(value.to_s) }
   end
 
   def stats(field)
     all
-      .map{ |m| m.send(field) rescue nil }
+      .map{ |m| m.public_send(field) rescue nil }
       .compact.flatten
       .group_by(&:itself)
-      .map{ |field, data| [field, data.count] }.to_h
+      .map{ |grouped_by, data| [grouped_by, data.count] }.to_h
   end
 end
