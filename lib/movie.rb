@@ -3,9 +3,6 @@ require 'date'
 class Movie
   attr_reader :to_h
 
-  MOVIE_FIELDS = %i[url title year country
-      date genre length rate director actors].freeze
-
   def initialize(movie)
     @to_h = movie
   end
