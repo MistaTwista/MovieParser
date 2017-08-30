@@ -18,7 +18,7 @@ class Movie
   end
 
   def year
-    Date.strptime(to_h[:year], "%Y").year rescue nil
+    Date.strptime(to_h[:year], "%Y").year
   end
 
   def length

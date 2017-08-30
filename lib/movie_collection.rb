@@ -18,7 +18,7 @@ class MovieCollection
 
   def sort_by(field)
     all.map do |movie|
-      field_data = movie.public_send(field) rescue nil
+      field_data = movie.public_send(field)
       field_data.nil? ? nil : movie
     end.compact.sort_by(&field)
   end
@@ -30,7 +30,7 @@ class MovieCollection
 
   def stats(field)
     all
-      .map{ |m| m.public_send(field) rescue nil }
+      .map{ |m| m.public_send(field) }
       .compact.flatten
       .group_by(&:itself)
       .map{ |grouped_by, data| [grouped_by, data.count] }.to_h
