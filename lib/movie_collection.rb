@@ -23,8 +23,8 @@ class MovieCollection
 
   def filter(options)
     all.select do |movie|
-      options.to_a.all? do |o, matcher|
-        matches?(movie.public_send(o), matcher)
+      options.to_a.all? do |option, matcher|
+        matches?(movie.public_send(option), matcher)
       end
     end
   end
