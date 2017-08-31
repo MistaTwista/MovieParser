@@ -34,6 +34,11 @@ class MovieCollection
       .map{ |grouped_by, data| [grouped_by, data.count] }.sort.to_h
   end
 
+  def has_genre?(genre)
+    @collection_genres ||= all.map(&:genre).flatten.uniq
+    @collection_genres.include?(genre)
+  end
+
   private
 
   def matches?(value, matcher)

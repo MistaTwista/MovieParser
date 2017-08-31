@@ -1,15 +1,9 @@
 require_relative '../lib/movie_collection'
 require 'test/unit'
 
-module MovieMock
-  def self.genre
-    "Drama"
-  end
-end
-
 module MovieCollectionMock
-  def self.all
-    [MovieMock]
+  def self.has_genre?(genre)
+    false
   end
 end
 

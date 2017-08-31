@@ -49,8 +49,7 @@ class Movie
 
   def collection_has_genre?(genre)
     return true if @collection.nil?
-    @collection_genres ||= @collection.all.map(&:genre).flatten.uniq
-    @collection_genres.include? genre
+    @collection.has_genre?(genre)
   end
 
   def method_missing(name, *args)
