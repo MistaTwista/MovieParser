@@ -42,7 +42,7 @@ class Movie
   end
 
   def to_s
-    "#{title} (#{year}; #{genre}) - #{length} min"
+    "#{title} (#{year}; #{genre} #{actors}) - #{length} min"
   end
 
   private

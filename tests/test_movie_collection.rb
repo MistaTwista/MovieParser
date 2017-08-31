@@ -22,16 +22,22 @@ class TestMovieCollection < Test::Unit::TestCase
     assert_equal('3 Idiots', @movies.sort_by(:actors).first.title)
   end
 
-  def test_filter_director
+  def test_filter
     assert_equal(7, @movies.filter(director: 'Nolan').count)
     assert_equal(5, @movies.filter(actors: 'Brad Pitt').count)
     assert_equal(39, @movies.filter(genre: 'Comedy').count)
     assert_equal(7, @movies.filter(year: 1957).count)
     assert_equal(19, @movies.filter(month: 'January').count)
     assert_equal(166, @movies.filter(country: 'USA').count)
+    assert_equal(1, @movies.filter(
+        actors: 'Arnold Schwarzenegger',
+        year: 1991
+    ).count)
+    assert_equal(2, @movies.filter(title: /terminator/i).count)
+    assert_equal(26, @movies.filter(year: 2001..2005).count)
   end
 
-  def test_stats_director
+  def test_stats
     assert_equal(7, @movies.stats(:director)['Christopher Nolan'])
     assert_equal(1, @movies.stats(:actors)['Heath Ledger'])
     assert_equal(4, @movies.stats(:year)[1984])

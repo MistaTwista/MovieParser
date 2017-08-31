@@ -1,5 +1,5 @@
+require 'csv'
 require_relative 'movie'
-require_relative 'csv_to_hash'
 
 class MovieCollection
   attr_reader :movies
@@ -8,7 +8,7 @@ class MovieCollection
     genre length rate director actors].freeze
 
   def initialize(filename, movie_class: Movie)
-    @movies = CsvToHash.new(filename, MOVIE_FIELDS).data
+    @movies = parse_from_file(filename)
       .map{ |movie| movie_class.new(movie) }
   end
 
@@ -17,15 +17,16 @@ class MovieCollection
   end
 
   def sort_by(field)
-    all.map do |movie|
-      field_data = movie.public_send(field)
-      field_data.nil? ? nil : movie
-    end.compact.sort_by(&field)
+    all.reject { |movie| movie.public_send(field).nil? }
+      .compact.sort_by(&field)
   end
 
-  def filter(field)
-    key, value = field.first
-    all.select{ |movie| movie.public_send(key).to_s.include?(value.to_s) }
+  def filter(options)
+    all.select do |movie|
+      options.to_a.all? do |o, matcher|
+        matches?(movie.public_send(o), matcher)
+      end
+    end
   end
 
   def stats(field)
@@ -34,5 +35,22 @@ class MovieCollection
       .compact.flatten
       .group_by(&:itself)
       .map{ |grouped_by, data| [grouped_by, data.count] }.to_h
+  end
+
+  private
+
+  def matches?(value, matcher)
+    case matcher
+    when Regexp
+      value.to_s.match? matcher
+    when Range
+      matcher.include? value
+    else
+      value.to_s.include? matcher.to_s
+    end
+  end
+
+  def parse_from_file(filename)
+    CSV.foreach(filename, { col_sep: '|', headers: MOVIE_FIELDS }).map(&:to_h)
   end
 end
