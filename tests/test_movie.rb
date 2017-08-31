@@ -1,6 +1,18 @@
 require_relative '../lib/movie_collection'
 require 'test/unit'
 
+module MovieMock
+  def self.genre
+    "Drama"
+  end
+end
+
+module MovieCollectionMock
+  def self.all
+    [MovieMock]
+  end
+end
+
 class TestMovie < Test::Unit::TestCase
   def setup
     movie = {
@@ -17,12 +29,14 @@ class TestMovie < Test::Unit::TestCase
     }
 
     @movie = Movie.new(movie)
+    @movie_with_collection = Movie.new(movie, MovieCollectionMock)
   end
 
   def test_has_genre
     assert_equal(true, @movie.has_genre?('Drama'))
+
     assert_raise(RuntimeError) do
-      @movie.has_genre?('Comedy')
+      @movie_with_collection.has_genre?('Cmedy')
     end
   end
 

@@ -9,7 +9,7 @@ class MovieCollection
 
   def initialize(filename, movie_class: Movie)
     @movies = parse_from_file(filename)
-      .map{ |movie| movie_class.new(movie) }
+      .map{ |movie| movie_class.new(movie, self) }
   end
 
   def all
@@ -23,30 +23,26 @@ class MovieCollection
 
   def filter(options)
     all.select do |movie|
-      options.to_a.all? do |option, matcher|
+      options.all? do |option, matcher|
         matches?(movie.public_send(option), matcher)
       end
     end
   end
 
   def stats(field)
-    all
-      .map{ |m| m.public_send(field) }
-      .compact.flatten
-      .group_by(&:itself)
-      .map{ |grouped_by, data| [grouped_by, data.count] }.to_h
+    all.map(&field).compact.flatten.group_by(&:itself)
+      .map{ |grouped_by, data| [grouped_by, data.count] }.sort.to_h
   end
 
   private
 
   def matches?(value, matcher)
+    return false if value.nil?
     case matcher
-    when Regexp
-      value.to_s.match? matcher
-    when Range
-      matcher.include? value
+    when Array, String
+      value.include? matcher
     else
-      value.to_s.include? matcher.to_s
+      matcher === value
     end
   end
 

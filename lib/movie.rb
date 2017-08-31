@@ -3,14 +3,14 @@ require 'date'
 class Movie
   attr_reader :to_h
 
-  def initialize(movie)
+  def initialize(movie, collection = nil)
     @to_h = movie
+    @collection = collection
   end
 
   def has_genre?(genre)
-    result = to_h[:genre].include?(genre)
-    raise "'#{title}' is not in genre #{genre}" unless result
-    result
+    raise "No #{genre} in a collection :(" unless collection_has_genre? genre
+    self.genre.include?(genre)
   end
 
   def month
@@ -46,6 +46,12 @@ class Movie
   end
 
   private
+
+  def collection_has_genre?(genre)
+    return true if @collection.nil?
+    @collection_genres ||= @collection.all.map(&:genre).flatten.uniq
+    @collection_genres.include? genre
+  end
 
   def method_missing(name, *args)
     name = name.to_sym
