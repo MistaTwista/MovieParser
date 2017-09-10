@@ -4,28 +4,17 @@ end
 
 filename = ARGV[0] || 'movies.txt'
 abort("#{filename} not found or can't be read") unless File.readable?(filename)
-require_relative 'lib/movie_collection'
+require_relative 'lib/cinemas/netflix'
+require_relative 'lib/cinemas/theatre'
 
-movies = MovieCollection.new(filename)
+netflix = Netflix.new(filename)
+netflix.pay(10)
+puts "You have #{netflix.account}"
+netflix.show(genre: 'Comedy', period: :new)
+puts "You have #{netflix.account}"
+puts "Terminator cost #{netflix.how_much?('The Terminator')}"
 
-puts_title 'All movies'
-puts movies.all.count
-
-puts_title 'Sort_by :length'
-puts movies.sort_by(:length).last(5)
-
-puts_title 'Has genre?'
-begin
-  puts movies.sort_by(:length).last.has_genre?('Comedy')
-rescue RuntimeError => error
-  puts error.message
-end
-
-puts_title 'Filter director: "Nolan"'
-puts movies.filter(director: 'Nolan')
-
-puts_title 'Stats Country'
-puts movies.stats :country
-
-puts_title 'Movies with Arnie in range 1980..2000'
-puts movies.filter(actors: 'Arnold Schwarzenegger', year: 1980..2000)
+theatre = Theatre.new(filename)
+theatre.show(Time.now)
+when_to_show = theatre.when?('Life Is Beautiful')
+puts "'Life Is Beautiful' showing on #{when_to_show.join(' and ')}"

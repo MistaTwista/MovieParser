@@ -42,10 +42,22 @@ class Movie
   end
 
   def to_s
-    "#{title} (#{year}; #{genre} #{actors}) - #{length} min"
+    genre = self.genre.join(', ')
+    actors = self.actors.join(', ')
+    "#{title} (#{actors}) #{year}; #{genre}; #{length} min"
+  end
+
+  def period
+    extract_period_from_movie_class
   end
 
   private
+
+  def extract_period_from_movie_class
+    movie_class = self.class.to_s
+    movie_class.gsub(/([A-Z])/,'_\1').gsub(/^_/, '')
+      .downcase.split('_').first.to_sym
+  end
 
   def collection_has_genre?(genre)
     return true if @collection.nil?

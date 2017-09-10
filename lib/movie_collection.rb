@@ -44,7 +44,9 @@ class MovieCollection
   def matches?(value, matcher)
     return false if value.nil?
     case matcher
-    when Array, String
+    when Array
+      (value & matcher).any?
+    when String
       value.include? matcher
     else
       matcher === value

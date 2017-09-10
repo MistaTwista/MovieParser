@@ -1,0 +1,3 @@
+http://imdb.com/title/tt0078748/?ref_=chttp_tt_52|Alien|1979|USA|1979-05-25|Horror,Sci-Fi|117 min|8.5|Ridley Scott|Sigourney Weaver,Tom Skerritt,John Hurt
+http://imdb.com/title/tt0021749/?ref_=chttp_tt_35|City Lights|1931|USA|1931-03-07|Comedy,Romance|87 min|8.6|Charles Chaplin|Charles Chaplin,Virginia Cherrill,Florence Lee
+http://imdb.com/title/tt0088247/?ref_=chttp_tt_208|The Terminator|1984|UK|1984-10-26|Action,Sci-Fi|107 min|8.1|James Cameron|Arnold Schwarzenegger,Linda Hamilton,Michael Biehn
