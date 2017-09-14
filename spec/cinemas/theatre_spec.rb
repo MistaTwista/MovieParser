@@ -1,4 +1,3 @@
-require 'movie_builder'
 require 'cinemas/theatre'
 
 describe Theatre do

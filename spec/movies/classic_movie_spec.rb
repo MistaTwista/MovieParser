@@ -3,9 +3,8 @@ require 'movies/classic_movie'
 
 describe ClassicMovie do
   it_behaves_like 'a movie'
-
+  include_context 'movies shared context'
   let(:movie_data) { MoviesMock::CLASSIC_MOVIE }
-  let(:movie) { ClassicMovie.new(movie_data) }
 
   describe '#to_s' do
     it do

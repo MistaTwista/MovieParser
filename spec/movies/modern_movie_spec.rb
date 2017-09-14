@@ -3,9 +3,8 @@ require 'movies/modern_movie'
 
 describe ModernMovie do
   it_behaves_like 'a movie'
-
+  include_context 'movies shared context'
   let(:movie_data) { MoviesMock::MODERN_MOVIE }
-  let(:movie) { ModernMovie.new(movie_data) }
 
   describe '#to_s' do
     it do

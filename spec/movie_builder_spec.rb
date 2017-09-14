@@ -1,9 +1,8 @@
-require 'movie_builder'
 require 'movies_mock'
 
 describe MovieBuilder do
-  let(:builder) { MovieBuilder.build_movie(movie_data) }
-  subject { builder.class }
+  include_context 'movies shared context'
+  subject { movie_builder.class }
 
   describe '.build_movie' do
     context 'when AncientMovie' do
@@ -28,7 +27,7 @@ describe MovieBuilder do
 
     context 'when unknown movie age' do
       let(:movie_data) { MoviesMock::UNKNOWN_MOVIE }
-      it { expect { builder.class }.to raise_error RuntimeError }
+      it { expect { movie_builder.class }.to raise_error RuntimeError }
     end
   end
 end

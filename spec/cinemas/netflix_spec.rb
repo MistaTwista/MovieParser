@@ -1,10 +1,10 @@
 require 'movies_mock'
-require 'movie_builder'
 require 'cinemas/netflix'
 
 describe Netflix do
+  include_context 'movies shared context'
+
   let(:movie_data) { MoviesMock::NEW_MOVIE }
-  let(:movie) { MovieBuilder.build_movie(movie_data) }
   let(:netflix) { Netflix.new('spec/data/movies.txt') }
   let(:premium_netflix) { Netflix.new('spec/data/movies.txt', 100500) }
 
@@ -24,7 +24,8 @@ describe Netflix do
     end
 
     it do
-      allow(netflix).to receive(:select_from_collection).and_return(movie)
+      allow(netflix).to receive(:select_from_collection)
+        .and_return(movie_builder)
 
       netflix.pay(10)
       expect{ netflix.show(genre: 'Comedy', period: :new) }
