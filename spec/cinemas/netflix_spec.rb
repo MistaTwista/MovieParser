@@ -1,7 +1,6 @@
 require 'movies_mock'
 require 'movie_builder'
 require 'cinemas/netflix'
-require 'timecop'
 
 describe Netflix do
   let(:movie_data) { MoviesMock::NEW_MOVIE }
@@ -33,7 +32,7 @@ describe Netflix do
     end
 
     it do
-      allow(STDOUT).to receive(:puts)  
+      allow(STDOUT).to receive(:puts)
       netflix.pay(10)
       expect { netflix.show(period: :modern) }
         .to change{netflix.account}.from(10).to(7)

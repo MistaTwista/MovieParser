@@ -1,6 +1,5 @@
 require 'movie_builder'
 require 'cinemas/theatre'
-require 'irb'
 
 describe Theatre do
   let(:theatre) { Theatre.new('spec/data/movies_cut.txt') }
@@ -13,26 +12,26 @@ describe Theatre do
 
   describe '#show' do
     context 'when morning' do
-      let(:now) { DateTime.parse('11:05') }
-
       it do
-        expect { theatre.show(now) }.to output(/City Lights/).to_stdout
+        expect { theatre.show('11:05') }.to output(/Ancient Movie/).to_stdout
       end
     end
 
     context 'when day' do
-      let(:now) { DateTime.parse('14:05') }
-
       it do
-        expect { theatre.show(now) }.to output(/City Lights/).to_stdout
+        expect { theatre.show('14:05') }.to output(/Comedy Movie/).to_stdout
       end
     end
 
     context 'when evening' do
-      let(:now) { DateTime.parse('19:05') }
-
       it do
-        expect { theatre.show(now) }.to output(/Alien/).to_stdout
+        expect { theatre.show('19:05') }.to output(/Alien/).to_stdout
+      end
+    end
+
+    context 'show any' do
+      it do
+        expect { theatre.show }.to output(/Now showing/).to_stdout
       end
     end
   end
@@ -40,13 +39,26 @@ describe Theatre do
   describe '#when?' do
     context 'never' do
       it do
-        expect { theatre.when?('The Terminator') }.to raise_error RuntimeError
+        expect(theatre.when?('The Terminator'))
+          .to eq [{"The Terminator"=>[:never]}]
       end
     end
 
     context 'sometime' do
       it do
-        expect(theatre.when?('Alien')).to eq %i[evening]
+        expect(theatre.when?('Alien')).to eq [{"Alien"=>[:evening]}]
+      end
+    end
+
+    context 'many movies matched' do
+      it do
+        expect(theatre.when?(/[A-Z]/))
+          .to eq [
+            {"Alien"=>[:evening]},
+            {"Comedy Movie"=>[:day]},
+            {"Ancient Movie"=>[:morning]},
+            {"The Terminator"=>[:never]}
+          ]
       end
     end
   end

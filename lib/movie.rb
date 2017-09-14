@@ -1,5 +1,4 @@
 require 'date'
-require 'irb'
 
 class Movie
   attr_reader :to_h
@@ -42,6 +41,24 @@ class Movie
     Date.strptime(to_h[:date]) rescue nil
   end
 
+  def period
+    self.class.period
+  end
+
+  def from_to
+    movie_start = Time.now
+    movie_end = movie_start + length * 60
+    "#{format_time(movie_start)} - #{format_time(movie_end)}"
+  end
+
+  def match?(options)
+    return false if options.nil?
+    param, value = options
+    movie_data = public_send(param)
+    return (movie_data & value).any? if value.is_a? Array
+    movie_data == value
+  end
+
   def to_s
     format('%s (%s) %i; %s; %i min',
       title,
@@ -52,14 +69,8 @@ class Movie
     )
   end
 
-  def period
-    self.class.period
-  end
-
-  def from_to
-    movie_start = Time.now
-    movie_end = movie_start + length * 60
-    "#{format_time(movie_start)} - #{format_time(movie_end)}"
+  def inspect
+    "#<#{self.class.name} #{title} #{genre} #{date}>"
   end
 
   private
