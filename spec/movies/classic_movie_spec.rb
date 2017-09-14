@@ -4,8 +4,8 @@ require 'movies/classic_movie'
 describe ClassicMovie do
   it_behaves_like 'a movie'
 
-  let(:movie_mock) { MoviesMock::CLASSIC_MOVIE }
-  let(:movie) { ClassicMovie.new(movie_mock) }
+  let(:movie_data) { MoviesMock::CLASSIC_MOVIE }
+  let(:movie) { ClassicMovie.new(movie_data) }
 
   describe '#to_s' do
     it do
@@ -14,5 +14,9 @@ describe ClassicMovie do
       expect(movie.to_s)
         .to eq '12 Angry Men - classic movie, director: Sidney Lumet, also: Some, Other, Movies'
     end
+  end
+
+  describe '#period' do
+    it { expect(movie.period).to eq :classic }
   end
 end

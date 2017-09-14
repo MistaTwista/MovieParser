@@ -1,6 +1,11 @@
 require_relative 'cinema'
 
 class Netflix < Cinema
+  NEW_COST = 5
+  MODERN_COST = 3
+  CLASSIC_COST = 1.5
+  ANCIENT_COST = 1
+
   attr_reader :account
 
   def initialize(filename, money_on_account = 0)
@@ -26,16 +31,20 @@ class Netflix < Cinema
   private
 
   def withdraw(amount)
-    raise "Insufficient funds" if @account < amount
+    raise insufficient_message(amount) if @account < amount
     @account -= amount
+  end
+
+  def insufficient_message(amount)
+    "Insufficient funds. Cost #{amount} and you have #{account}"
   end
 
   def price_for(movie)
     case movie.period
-    when :new then 5
-    when :modern then 3
-    when :classic then 1.5
-    when :ancient then 1
+    when :new then NEW_COST
+    when :modern then MODERN_COST
+    when :classic then CLASSIC_COST
+    when :ancient then ANCIENT_COST
     end
   end
 end

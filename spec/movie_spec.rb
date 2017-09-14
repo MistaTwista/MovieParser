@@ -4,8 +4,8 @@ require 'movies_mock'
 describe Movie do
   it_behaves_like 'a movie'
 
-  let(:movie_mock) { MoviesMock::MODERN_MOVIE }
-  let(:movie) { Movie.new(movie_mock) }
+  let(:movie_data) { MoviesMock::MODERN_MOVIE }
+  let(:movie) { Movie.new(movie_data) }
 
   describe '#to_s' do
     it do

@@ -8,11 +8,8 @@ class NewMovie < Movie
   private
 
   def years_ago
+    this_year = Time.now.year
     return "#{this_year - year} years ago" if this_year > year
     ""
-  end
-
-  def this_year
-    Time.now.year
   end
 end

@@ -20,17 +20,7 @@ class Cinema < MovieCollection
   end
 
   def show_movie
-    "Now showing: #{movie.to_s}"
-  end
-
-  def movie_from_to
-    movie_start = Time.now
-    movie_end = movie_start + (movie.length * 60)
-    "#{format_time(movie_start)} - #{format_time(movie_end)}"
-  end
-
-  def format_time(time)
-    time.strftime("%H:%m")
+    "Now showing: #{movie.to_s} #{movie.from_to}"
   end
 
   def build_movie(movie_hash)

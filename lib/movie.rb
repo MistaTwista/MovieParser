@@ -1,4 +1,5 @@
 require 'date'
+require 'irb'
 
 class Movie
   attr_reader :to_h
@@ -42,21 +43,34 @@ class Movie
   end
 
   def to_s
-    genre = self.genre.join(', ')
-    actors = self.actors.join(', ')
-    "#{title} (#{actors}) #{year}; #{genre}; #{length} min"
+    format('%s (%s) %i; %s; %i min',
+      title,
+      actors.join(', '),
+      year,
+      genre.join(', '),
+      length
+    )
   end
 
   def period
-    extract_period_from_movie_class
+    self.class.period
+  end
+
+  def from_to
+    movie_start = Time.now
+    movie_end = movie_start + length * 60
+    "#{format_time(movie_start)} - #{format_time(movie_end)}"
   end
 
   private
 
-  def extract_period_from_movie_class
-    movie_class = self.class.to_s
-    movie_class.gsub(/([A-Z])/,'_\1').gsub(/^_/, '')
-      .downcase.split('_').first.to_sym
+  def self.period
+    period = name.scan(/(\w+)Movie/).flatten.first
+    period.downcase.to_sym unless period.nil?
+  end
+
+  def format_time(time)
+    time.strftime("%H:%M")
   end
 
   def collection_has_genre?(genre)

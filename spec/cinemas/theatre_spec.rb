@@ -1,4 +1,3 @@
-require 'movies_mock'
 require 'movie_builder'
 require 'cinemas/theatre'
 require 'irb'
