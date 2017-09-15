@@ -1,10 +1,9 @@
 require 'movie'
-require 'movies_mock'
 
 describe Movie do
   it_behaves_like 'a movie'
-  include_context 'movies shared context'
-  let(:movie_data) { MoviesMock::MODERN_MOVIE }
+  include_context 'movie data'
+  let(:movie) { Movie.new(modern_movie) }
 
   describe '#to_s' do
     it do

@@ -1,11 +1,10 @@
-require 'movies_mock'
+require 'movie_builder'
 require 'cinemas/cinema'
 require 'timecop'
 
 describe Cinema do
-  include_context 'movies shared context'
-
-  let(:movie_data) { MoviesMock::ANCIENT_MOVIE }
+  include_context 'movie data'
+  let(:movie_builder) { MovieBuilder.build_movie(ancient_movie) }
   let(:cinema) { Cinema.new('spec/data/movies.txt') }
 
   describe '#new' do

@@ -1,13 +1,12 @@
-require 'movies_mock'
 require 'movies/new_movie'
 
 describe NewMovie do
   it_behaves_like 'a movie'
-  include_context 'movies shared context'
-  let(:movie_data) { MoviesMock::NEW_MOVIE }
+  include_context 'movie data'
+  let(:movie) { described_class.new(new_movie) }
 
   describe '#to_s' do
-    it { expect(movie.to_s).to match /Dark Knight/ }
+    it { expect(movie.to_s).to match(/Dark Knight/) }
   end
 
   describe '#period' do

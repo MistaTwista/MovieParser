@@ -1,10 +1,10 @@
-require 'movies_mock'
+require 'movie_builder'
 require 'cinemas/netflix'
 
 describe Netflix do
-  include_context 'movies shared context'
+  include_context 'movie data'
+  let(:movie_builder) { MovieBuilder.build_movie(new_movie) }
 
-  let(:movie_data) { MoviesMock::NEW_MOVIE }
   let(:netflix) { Netflix.new('spec/data/movies.txt') }
   let(:premium_netflix) { Netflix.new('spec/data/movies.txt', 100500) }
 

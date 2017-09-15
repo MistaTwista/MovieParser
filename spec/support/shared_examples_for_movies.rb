@@ -1,10 +1,9 @@
-require 'movies_mock'
-
 shared_examples 'a movie' do
-  let(:movie_data) { MoviesMock::MODERN_MOVIE }
+  include_context 'movie data'
+
   let(:collection) { double }
-  let(:movie) { described_class.new(movie_data) }
-  let(:movie_with_collection) { described_class.new(movie_data, collection) }
+  let(:movie) { described_class.new(modern_movie) }
+  let(:movie_with_collection) { described_class.new(modern_movie, collection) }
 
   describe '#has_genre' do
     it do
