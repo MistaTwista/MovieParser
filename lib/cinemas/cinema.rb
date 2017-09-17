@@ -18,7 +18,7 @@ class Cinema < MovieCollection
   private
 
   def select_from_collection(collection)
-    collection.sample
+    collection.sort_by { |movie| movie.rate * rand }.last
   end
 
   def show_movie

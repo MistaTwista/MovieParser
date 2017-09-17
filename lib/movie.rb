@@ -1,5 +1,4 @@
 require 'date'
-require 'irb'
 
 class Movie
   attr_reader :to_h

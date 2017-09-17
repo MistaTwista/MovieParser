@@ -1,6 +1,5 @@
 require 'movie_collection'
 require 'movies/ancient_movie'
-require 'irb'
 
 RSpec.describe MovieCollection do
   let(:no_file_collection) { MovieCollection.new('bad/path/file.txt') }
