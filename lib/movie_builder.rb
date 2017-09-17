@@ -15,7 +15,7 @@ class MovieBuilder
       when 2000..Time.now.year
         NewMovie
       else
-        raise "Movie year is out of range"
+        raise 'Movie year is out of range'
       end
 
     movie_class.new(movie, collection)

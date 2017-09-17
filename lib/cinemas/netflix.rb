@@ -1,10 +1,12 @@
 require_relative 'cinema'
 
 class Netflix < Cinema
-  NEW_COST = 5
-  MODERN_COST = 3
-  CLASSIC_COST = 1.5
-  ANCIENT_COST = 1
+  PRICE_LIST = {
+    new: 5,
+    modern: 3,
+    classic: 1.5,
+    ancient: 1
+  }
 
   attr_reader :account
 
@@ -15,8 +17,9 @@ class Netflix < Cinema
 
   def show(options)
     @movie = select_from_collection filter(options)
-    withdraw price_for movie
-    puts show_movie
+    raise NothingToShow unless movie
+    withdraw PRICE_LIST[movie.period]
+    puts show_movie 
   end
 
   def pay(amount)
@@ -25,7 +28,7 @@ class Netflix < Cinema
 
   def how_much?(title)
     movies = filter(title: title)
-    price_for(movies.first) if movies.any?
+    movies.map { |m| { m.title => PRICE_LIST[m.period] } } if movies.any?
   end
 
   private
@@ -37,14 +40,5 @@ class Netflix < Cinema
 
   def insufficient_message(amount)
     "Insufficient funds. Cost #{amount} and you have #{account}"
-  end
-
-  def price_for(movie)
-    case movie.period
-    when :new then NEW_COST
-    when :modern then MODERN_COST
-    when :classic then CLASSIC_COST
-    when :ancient then ANCIENT_COST
-    end
   end
 end

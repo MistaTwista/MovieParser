@@ -1,4 +1,5 @@
 require 'date'
+require 'irb'
 
 class Movie
   attr_reader :to_h
@@ -57,6 +58,27 @@ class Movie
     movie_data = public_send(param)
     return (movie_data & value).any? if value.is_a? Array
     movie_data == value
+  end
+  
+  def matches_all?(filters)
+    filters.all? do |filter|
+      matches? filter
+    end
+  end
+
+  def matches?(filter)
+    param, matcher = filter
+    value = public_send(param)
+    return false if value.nil?
+
+    case matcher
+    when Array
+      (value & matcher).any?
+    when String
+      value.include? matcher
+    else
+      matcher === value
+    end
   end
 
   def to_s

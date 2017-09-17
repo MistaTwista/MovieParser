@@ -1,5 +1,6 @@
 require 'movie_collection'
 require 'movies/ancient_movie'
+require 'irb'
 
 RSpec.describe MovieCollection do
   let(:no_file_collection) { MovieCollection.new('bad/path/file.txt') }
@@ -46,6 +47,7 @@ RSpec.describe MovieCollection do
       expect(collection.sort_by(:rate).first.title).to eq 'Beauty and the Beast'
       expect(collection.sort_by(:director).last.title).to eq 'Departures'
       expect(collection.sort_by(:actors).first.title).to eq '3 Idiots'
+      expect{ collection.sort_by(:unknown) }.to raise_error NoMethodError
     end
   end
 

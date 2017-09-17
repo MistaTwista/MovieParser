@@ -1,5 +1,6 @@
 require 'movie_builder'
 require 'cinemas/netflix'
+require 'errors'
 
 describe Netflix do
   include_context 'movie data'
@@ -45,6 +46,8 @@ describe Netflix do
   end
 
   describe '#how_much?' do
-    it { expect(netflix.how_much? 'The Terminator').to eq 3 }
+    it do
+      expect(netflix.how_much? 'The Terminator').to eq [{"The Terminator" => 3}]
+    end
   end
 end

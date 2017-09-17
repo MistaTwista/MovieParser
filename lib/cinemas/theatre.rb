@@ -1,20 +1,22 @@
 require_relative 'cinema'
 
 class Theatre < Cinema
-  MORNING = { time: :morning, filter: [:period, :ancient] }
-  DAY = { time: :day, filter: [:genre, ['Comedy', 'Adventure']] }
-  EVENING = { time: :evening, filter: [:genre, ['Drama', 'Horror']] }
-
-  TIME_TABLE = {
-    7..12 => MORNING,
-    13..17 => DAY,
-    17..23 => EVENING,
-    0..6 => EVENING
+  PERIODS = {
+    morning: { period: :ancient },
+    day: { genre: ['Comedy', 'Adventure'] },
+    evening: { genre: ['Drama', 'Horror'] }
   }
 
-  def show(time = nil)
+  TIME_TABLE = {
+    9...13 => :morning,
+    13...17 => :day,
+    17..23 => :evening
+  }
+
+  def show(time = Time.now.strftime("%H:%M"))
     movies = select_by_time(time)
     @movie = select_from_collection(movies)
+    raise NothingToShow unless movie
     puts show_movie
   end
 
@@ -25,25 +27,17 @@ class Theatre < Cinema
 
   private
 
-  def select_by_time(time = nil)
-    return movies if time.nil?
+  def select_by_time(time)
     time = DateTime.parse(time).hour
-    result = []
-
-    TIME_TABLE.each do |time_range, params|
-      param, value = params[:filter]
-      result << filter(param => value) if time_range.include? time
-    end
-
-    result.flatten.uniq
+    _, period = TIME_TABLE.select{ |range| range.include? time }.first
+    raise "Theatre is closed in #{time}" if period.nil?
+    PERIODS[period].map { |param, value| filter(param => value) }.flatten
   end
 
   def when_to_show_movie(movie)
-    result = []
-
-    TIME_TABLE.each do |time_range, params|
-      result << params[:time] if movie.match?(params[:filter])
-    end
+    result = TIME_TABLE.map { |_, period|
+      period if movie.matches_all?(PERIODS[period])
+    }.compact
 
     result << :never if result.empty?
     result.uniq

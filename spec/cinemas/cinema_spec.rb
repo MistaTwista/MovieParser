@@ -17,8 +17,7 @@ describe Cinema do
         .and_return(movie_builder)
 
       Timecop.freeze(Time.local(2017, 9, 14, 18, 15)) do
-        expect(cinema.show)
-          .to eq "Now showing: Casablanca - ancient movie (1942) 18:15 - 19:57"
+        expect { cinema.show }.to output(/ancient/).to_stdout
       end
     end
   end

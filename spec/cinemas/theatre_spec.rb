@@ -28,6 +28,13 @@ describe Theatre do
       end
     end
 
+    context 'when closed' do
+      it do
+        expect { theatre.show('6:05') }
+          .to raise_error(RuntimeError, /closed/)
+      end
+    end
+
     context 'show any' do
       it do
         expect { theatre.show }.to output(/Now showing/).to_stdout

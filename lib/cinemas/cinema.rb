@@ -1,5 +1,6 @@
 require_relative '../movie_builder'
 require_relative '../movie_collection'
+require_relative '../errors'
 
 class Cinema < MovieCollection
   attr_reader :movie
@@ -10,7 +11,8 @@ class Cinema < MovieCollection
 
   def show
     @movie = select_from_collection(movies)
-    show_movie
+    raise NothingToShow unless movie
+    puts show_movie
   end
 
   private
