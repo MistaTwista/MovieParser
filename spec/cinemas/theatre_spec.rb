@@ -16,21 +16,21 @@ describe Theatre do
     context 'when morning' do
       it_behaves_like 'random movie chooser' do
         let(:filter) { { period: :ancient } }
-        let(:time) { Time.local(2017, 9, 14, 11, 05).strftime("%H:%M") }
+        let(:requested_time) { '11:05' }
       end
     end
 
     context 'when day' do
       it_behaves_like 'random movie chooser' do
         let(:filter) { { genre: ['Comedy', 'Adventure'] } }
-        let(:time) { Time.local(2017, 9, 14, 14, 05).strftime("%H:%M") }
+        let(:requested_time) { '14:05' }
       end
     end
 
     context 'when evening' do
       it_behaves_like 'random movie chooser' do
         let(:filter) { { genre: ['Drama', 'Horror'] } }
-        let(:time) { Time.local(2017, 9, 14, 19, 05).strftime("%H:%M") }
+        let(:requested_time) { '19:05' }
       end
     end
 
