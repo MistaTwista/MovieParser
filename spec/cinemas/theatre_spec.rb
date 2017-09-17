@@ -1,6 +1,9 @@
 require 'cinemas/theatre'
+require 'timecop'
 
 describe Theatre do
+  include_context 'movie data'
+  let(:movie_builder) { MovieBuilder.build_movie(ancient_movie) }
   let(:theatre) { Theatre.new('spec/data/movies_cut.txt') }
 
   describe '#new' do
@@ -11,20 +14,23 @@ describe Theatre do
 
   describe '#show' do
     context 'when morning' do
-      it do
-        expect { theatre.show('11:05') }.to output(/Ancient Movie/).to_stdout
+      it_behaves_like 'random movie chooser' do
+        let(:filter) { { period: :ancient } }
+        let(:time) { Time.local(2017, 9, 14, 11, 05).strftime("%H:%M") }
       end
     end
 
     context 'when day' do
-      it do
-        expect { theatre.show('14:05') }.to output(/Comedy Movie/).to_stdout
+      it_behaves_like 'random movie chooser' do
+        let(:filter) { { genre: ['Comedy', 'Adventure'] } }
+        let(:time) { Time.local(2017, 9, 14, 14, 05).strftime("%H:%M") }
       end
     end
 
     context 'when evening' do
-      it do
-        expect { theatre.show('19:05') }.to output(/Alien/).to_stdout
+      it_behaves_like 'random movie chooser' do
+        let(:filter) { { genre: ['Drama', 'Horror'] } }
+        let(:time) { Time.local(2017, 9, 14, 19, 05).strftime("%H:%M") }
       end
     end
 
