@@ -108,4 +108,8 @@ class Movie
     return to_h[name] if to_h.key?(name)
     super
   end
+
+  def respond_to_missing?(method_name, include_private = false)
+    to_h.key?(method_name) || super
+  end
 end
