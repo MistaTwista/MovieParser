@@ -52,14 +52,6 @@ class Movie
     "#{format_time(movie_start)} - #{format_time(movie_end)}"
   end
 
-  def match?(options)
-    return false if options.nil?
-    param, value = options
-    movie_data = public_send(param)
-    return (movie_data & value).any? if value.is_a? Array
-    movie_data == value
-  end
-  
   def matches_all?(filters)
     filters.all? do |filter|
       matches? filter
