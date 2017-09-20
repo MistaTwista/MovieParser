@@ -22,7 +22,10 @@ class Theatre < Cinema
 
   def when?(title)
     movies = filter(title: title)
-    movies.map { |m| { m.title => when_to_show_movie(m) } } if movies.any?
+    movies.reduce({}) do |acc, m|
+      acc[m.title] = when_to_show_movie(m)
+      acc
+    end
   end
 
   private
@@ -35,11 +38,9 @@ class Theatre < Cinema
   end
 
   def when_to_show_movie(movie)
-    result = TIME_TABLE
+    TIME_TABLE
       .select { |_, period| movie.matches_all?(PERIODS[period]) }
       .map(&:last)
-
-    result << :never if result.empty?
-    result.uniq
+      .uniq
   end
 end

@@ -4,10 +4,11 @@ require 'errors'
 
 describe Netflix do
   include_context 'movie data'
-  let(:movie_builder) { MovieBuilder.build_movie(new_movie) }
-
+  let(:current_movie) { MovieBuilder.build_movie(new_movie) }
   let(:netflix) { Netflix.new('spec/data/movies.txt') }
   let(:premium_netflix) { Netflix.new('spec/data/movies.txt', 100500) }
+  let(:initial_money) { 10 }
+  let(:collection) { [current_movie] }
 
   describe '#new' do
     it do
@@ -17,30 +18,30 @@ describe Netflix do
   end
 
   describe '#show' do
-    before { netflix.pay(10) }
+    before do
+      netflix.pay(initial_money)
+      allow(netflix).to receive(:filter).and_return(collection)
+    end
 
     context 'when insufficient funds' do
+      let(:initial_money) { 0 }
+
       it do
-        allow(STDOUT).to receive(:puts)
-        expect { 5.times { netflix.show(genre: 'Drama') } }
+        expect { netflix.show(genre: 'Drama') }
           .to raise_error(RuntimeError, /Insufficient funds/)
       end
     end
 
     context 'when nothing to show' do
-      it do
-        allow(netflix).to receive(:filter)
-          .and_return([])
+      let(:collection) { [] }
 
+      it do
         expect{ netflix.show(genre: 'Comedy', period: :new) }
           .to raise_error NothingToShow
       end
     end
 
     it do
-      allow(netflix).to receive(:peek_random)
-        .and_return(movie_builder)
-
       expect{ netflix.show(genre: 'Comedy', period: :new) }
         .to output(/Dark Knight/).to_stdout
         .and change(netflix, :account).from(10).to(5)

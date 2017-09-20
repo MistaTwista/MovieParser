@@ -4,7 +4,7 @@ require 'timecop'
 
 describe Cinema do
   include_context 'movie data'
-  let(:movie_builder) { MovieBuilder.build_movie(ancient_movie) }
+  let(:current_movie) { MovieBuilder.build_movie(ancient_movie) }
   let(:cinema) { Cinema.new('spec/data/movies.txt') }
 
   describe '#new' do
@@ -21,10 +21,10 @@ describe Cinema do
 
     it do
       allow(cinema).to receive(:peek_random)
-        .and_return(movie_builder)
+        .and_return(current_movie)
 
       Timecop.freeze(Time.local(2017, 9, 14, 18, 15)) do
-        expect { cinema.show }.to output(/ancient/).to_stdout
+        expect { cinema.show }.to output(/18:15/).to_stdout
       end
     end
   end

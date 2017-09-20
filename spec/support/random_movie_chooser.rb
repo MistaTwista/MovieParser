@@ -5,7 +5,7 @@ RSpec.shared_examples 'choose movie by time' do |requested_time, filter|
 
     it 'selecting good movie' do
       expect(theatre)
-        .to receive(:filter).with(filter).and_return([movie_builder])
+        .to receive(:filter).with(filter).and_return [current_movie]
 
       Timecop.freeze(time) do
         expect { theatre.show(ftime) }.to output(/#{ftime}/).to_stdout
