@@ -21,11 +21,9 @@ class MovieCollection
       .compact.sort_by(&field)
   end
 
-  def filter(options)
+  def filter(params)
     all.select do |movie|
-      options.all? do |option, matcher|
-        matches?(movie.public_send(option), matcher)
-      end
+      movie.matches_all? params
     end
   end
 
@@ -40,16 +38,6 @@ class MovieCollection
   end
 
   private
-
-  def matches?(value, matcher)
-    return false if value.nil?
-    case matcher
-    when Array, String
-      value.include? matcher
-    else
-      matcher === value
-    end
-  end
 
   def parse_from_file(filename)
     CSV.foreach(filename, { col_sep: '|', headers: MOVIE_FIELDS }).map(&:to_h)

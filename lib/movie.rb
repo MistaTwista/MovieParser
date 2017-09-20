@@ -41,11 +41,57 @@ class Movie
     Date.strptime(to_h[:date]) rescue nil
   end
 
+  def period
+    self.class.period
+  end
+
+  def from_to(movie_start = Time.now)
+    movie_end = movie_start + length * 60
+    "#{format_time(movie_start)} - #{format_time(movie_end)}"
+  end
+
+  def matches_all?(filters)
+    filters.all? { |name, value| matches?(name, value) }
+  end
+
+  def matches?(field, filter_value)
+    value = public_send(field)
+    return false if value.nil?
+
+    case filter_value
+    when Array
+      (value & filter_value).any?
+    when String
+      value.include? filter_value
+    else
+      filter_value === value
+    end
+  end
+
   def to_s
-    "#{title} (#{year}; #{genre} #{actors}) - #{length} min"
+    format('%s (%s) %i; %s; %i min',
+      title,
+      actors.join(', '),
+      year,
+      genre.join(', '),
+      length
+    )
+  end
+
+  def inspect
+    "#<#{self.class.name} #{title} #{genre} #{date}>"
   end
 
   private
+
+  def self.period
+    period = name.scan(/(\w+)Movie/).flatten.first
+    period.downcase.to_sym unless period.nil?
+  end
+
+  def format_time(time)
+    time.strftime("%H:%M")
+  end
 
   def collection_has_genre?(genre)
     return true if @collection.nil?
@@ -56,5 +102,9 @@ class Movie
     name = name.to_sym
     return to_h[name] if to_h.key?(name)
     super
+  end
+
+  def respond_to_missing?(method_name, include_private = false)
+    to_h.key?(method_name) || super
   end
 end
