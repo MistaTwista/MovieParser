@@ -35,9 +35,9 @@ class Theatre < Cinema
   end
 
   def when_to_show_movie(movie)
-    result = TIME_TABLE.map { |_, period|
-      period if movie.matches_all?(PERIODS[period])
-    }.compact
+    result = TIME_TABLE
+      .select { |_, period| movie.matches_all?(PERIODS[period]) }
+      .map(&:last)
 
     result << :never if result.empty?
     result.uniq
