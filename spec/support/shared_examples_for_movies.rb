@@ -4,6 +4,7 @@ shared_examples 'a movie' do
   let(:collection) { double }
   let(:movie) { described_class.new(modern_movie) }
   let(:movie_with_collection) { described_class.new(modern_movie, collection) }
+  subject { movie }
 
   describe '#has_genre' do
     it do
@@ -19,15 +20,15 @@ shared_examples 'a movie' do
   end
 
   describe '#title' do
-    it { expect(movie.title).to eq 'The Shawshank Redemption' }
+    its(:title) { is_expected.to eq 'The Shawshank Redemption' }
   end
 
   describe '#year' do
-    it { expect(movie.year).to eq 1994 }
+    its(:year) { is_expected.to eq 1994 }
   end
 
   describe '#country' do
-    it { expect(movie.country).to eq 'USA' }
+    its(:country) { is_expected.to eq 'USA' }
   end
 
   describe '#date' do
@@ -35,28 +36,28 @@ shared_examples 'a movie' do
   end
 
   describe '#genre' do
-    it { expect(movie.genre).to eq %w[Crime Drama] }
+    its(:genre) { is_expected.to eq %w[Crime Drama] }
   end
 
   describe '#length' do
-    it { expect(movie.length).to eq 142 }
+    its(:length) { is_expected.to eq 142 }
   end
 
   describe '#rate' do
-    it { expect(movie.rate).to eq 9.3 }
+    its(:rate) { is_expected.to eq 9.3 }
   end
 
   describe '#director' do
-    it { expect(movie.director).to eq 'Frank Darabont' }
+    its(:director) { is_expected.to eq 'Frank Darabont' }
   end
 
   describe '#actors' do
-    it do
-      expect(movie.actors).to eq ['Tim Robbins', 'Morgan Freeman', 'Bob Gunton']
+    its(:actors) do
+      is_expected.to eq ['Tim Robbins', 'Morgan Freeman', 'Bob Gunton']
     end
   end
 
   describe '#month' do
-    it { expect(movie.month).to eq 'October' }
+    its(:month) { is_expected.to eq 'October' }
   end
 end

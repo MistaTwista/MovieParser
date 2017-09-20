@@ -4,15 +4,13 @@ describe ModernMovie do
   it_behaves_like 'a movie'
   include_context 'movie data'
   let(:movie) { described_class.new(modern_movie) }
+  subject { movie }
 
   describe '#to_s' do
-    it do
-      expect(movie.to_s)
-        .to eq 'The Shawshank Redemption - modern movie. Actors: Tim Robbins, Morgan Freeman, Bob Gunton'
-    end
+    its(:to_s) { is_expected.to match(/The Shawshank Redemption/) }
   end
 
   describe '#period' do
-    it { expect(movie.period).to eq :modern }
+    its(:period) { is_expected.to eq :modern }
   end
 end

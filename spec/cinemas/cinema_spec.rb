@@ -12,8 +12,15 @@ describe Cinema do
   end
 
   describe '#show' do
+    context 'when nothing to show' do
+      it do
+        allow(cinema).to receive(:movies).and_return([])
+        expect { cinema.show }.to raise_error NothingToShow
+      end
+    end
+
     it do
-      allow(cinema).to receive(:select_from_collection)
+      allow(cinema).to receive(:peek_random)
         .and_return(movie_builder)
 
       Timecop.freeze(Time.local(2017, 9, 14, 18, 15)) do

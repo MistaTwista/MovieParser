@@ -45,30 +45,26 @@ class Movie
     self.class.period
   end
 
-  def from_to
-    movie_start = Time.now
+  def from_to(movie_start = Time.now)
     movie_end = movie_start + length * 60
     "#{format_time(movie_start)} - #{format_time(movie_end)}"
   end
 
   def matches_all?(filters)
-    filters.all? do |filter|
-      matches? filter
-    end
+    filters.all? { |name, value| matches?(name, value) }
   end
 
-  def matches?(filter)
-    param, matcher = filter
-    value = public_send(param)
+  def matches?(field, filter_value)
+    value = public_send(field)
     return false if value.nil?
 
-    case matcher
+    case filter_value
     when Array
-      (value & matcher).any?
+      (value & filter_value).any?
     when String
-      value.include? matcher
+      value.include? filter_value
     else
-      matcher === value
+      filter_value === value
     end
   end
 

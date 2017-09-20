@@ -1,4 +1,5 @@
 require_relative 'cinema'
+require_relative '../errors'
 
 class Netflix < Cinema
   PRICE_LIST = {
@@ -15,11 +16,12 @@ class Netflix < Cinema
     super(filename)
   end
 
-  def show(options)
-    @movie = select_from_collection filter(options)
-    raise NothingToShow unless movie
+  def show(filter)
+    movies = filter(filter)
+    raise NothingToShow, filter unless movies.any?
+    movie = peek_random(movies)
     withdraw PRICE_LIST[movie.period]
-    puts show_movie 
+    puts show_movie(movie)
   end
 
   def pay(amount)

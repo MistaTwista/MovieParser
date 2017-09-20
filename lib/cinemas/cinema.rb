@@ -10,18 +10,18 @@ class Cinema < MovieCollection
   end
 
   def show
-    @movie = select_from_collection(movies)
-    raise NothingToShow unless movie
-    puts show_movie
+    raise NothingToShow unless movies.any?
+    movie = peek_random(movies)
+    puts show_movie(movie)
   end
 
   private
 
-  def select_from_collection(collection)
+  def peek_random(collection)
     collection.sort_by { |movie| movie.rate * rand }.last
   end
 
-  def show_movie
+  def show_movie(movie)
     "Now showing: #{movie.to_s} #{movie.from_to}"
   end
 

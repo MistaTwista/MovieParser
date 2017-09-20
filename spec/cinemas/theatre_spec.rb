@@ -7,31 +7,22 @@ describe Theatre do
   let(:theatre) { Theatre.new('spec/data/movies_cut.txt') }
 
   describe '#new' do
-    it do
-      expect(theatre.movies.class).to eq Array
-    end
+    it { expect(theatre.movies.class).to eq Array }
   end
 
   describe '#show' do
     context 'when morning' do
-      it_behaves_like 'random movie chooser' do
-        let(:filter) { { period: :ancient } }
-        let(:requested_time) { '11:05' }
-      end
+      it_behaves_like 'choose movie by time', '11:05', period: :ancient
     end
 
     context 'when day' do
-      it_behaves_like 'random movie chooser' do
-        let(:filter) { { genre: ['Comedy', 'Adventure'] } }
-        let(:requested_time) { '14:05' }
-      end
+      it_behaves_like 'choose movie by time',
+        '14:05', genre: ['Comedy', 'Adventure']
     end
 
     context 'when evening' do
-      it_behaves_like 'random movie chooser' do
-        let(:filter) { { genre: ['Drama', 'Horror'] } }
-        let(:requested_time) { '19:05' }
-      end
+      it_behaves_like 'choose movie by time',
+        '19:05', genre: ['Drama', 'Horror']
     end
 
     context 'when closed' do
@@ -41,9 +32,18 @@ describe Theatre do
       end
     end
 
+    context 'when nothing to show' do
+      it do
+        allow(theatre).to receive(:filter_by_time).and_return([])
+        expect { theatre.show('6:05') }.to raise_error NothingToShow
+      end
+    end
+
     context 'show any' do
       it do
-        expect { theatre.show }.to output(/Now showing/).to_stdout
+        Timecop.freeze(Time.local(2017, 9, 14, 18, 15)) do
+          expect { theatre.show }.to output(/Now showing/).to_stdout
+        end
       end
     end
   end
@@ -57,9 +57,7 @@ describe Theatre do
     end
 
     context 'sometime' do
-      it do
-        expect(theatre.when?('Alien')).to eq [{"Alien"=>[:evening]}]
-      end
+      it { expect(theatre.when?('Alien')).to eq [{"Alien"=>[:evening]}] }
     end
 
     context 'many movies matched' do

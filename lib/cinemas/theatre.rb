@@ -14,10 +14,10 @@ class Theatre < Cinema
   }
 
   def show(time = Time.now.strftime("%H:%M"))
-    movies = select_by_time(time)
-    @movie = select_from_collection(movies)
-    raise NothingToShow unless movie
-    puts show_movie
+    movies = filter_by_time(time)
+    raise NothingToShow, time unless movies.any?
+    movie = peek_random(movies)
+    puts show_movie(movie)
   end
 
   def when?(title)
@@ -27,11 +27,11 @@ class Theatre < Cinema
 
   private
 
-  def select_by_time(time)
+  def filter_by_time(time)
     time = DateTime.parse(time).hour
     _, period = TIME_TABLE.select{ |range| range.include? time }.first
     raise "Theatre is closed in #{time}" if period.nil?
-    PERIODS[period].map { |param, value| filter(param => value) }.flatten
+    filter(PERIODS[period])
   end
 
   def when_to_show_movie(movie)

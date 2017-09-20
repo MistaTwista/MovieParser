@@ -17,27 +17,33 @@ describe Netflix do
   end
 
   describe '#show' do
+    before { netflix.pay(10) }
+
     context 'when insufficient funds' do
       it do
-        expect { netflix.show(genre: 'Drama') }
+        allow(STDOUT).to receive(:puts)
+        expect { 5.times { netflix.show(genre: 'Drama') } }
           .to raise_error(RuntimeError, /Insufficient funds/)
       end
     end
 
-    it do
-      allow(netflix).to receive(:select_from_collection)
-        .and_return(movie_builder)
+    context 'when nothing to show' do
+      it do
+        allow(netflix).to receive(:filter)
+          .and_return([])
 
-      netflix.pay(10)
-      expect{ netflix.show(genre: 'Comedy', period: :new) }
-        .to output(/Dark Knight/).to_stdout
+        expect{ netflix.show(genre: 'Comedy', period: :new) }
+          .to raise_error NothingToShow
+      end
     end
 
     it do
-      allow(STDOUT).to receive(:puts)
-      netflix.pay(10)
-      expect { netflix.show(period: :modern) }
-        .to change{netflix.account}.from(10).to(7)
+      allow(netflix).to receive(:peek_random)
+        .and_return(movie_builder)
+
+      expect{ netflix.show(genre: 'Comedy', period: :new) }
+        .to output(/Dark Knight/).to_stdout
+        .and change(netflix, :account).from(10).to(5)
     end
   end
 
