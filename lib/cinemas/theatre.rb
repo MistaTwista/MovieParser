@@ -21,11 +21,7 @@ class Theatre < Cinema
   end
 
   def when?(title)
-    movies = filter(title: title)
-    movies.reduce({}) do |acc, m|
-      acc[m.title] = when_to_show_movie(m)
-      acc
-    end
+    filter(title: title).map { |m| [m.title, when_to_show_movie(m)] }.to_h
   end
 
   private

@@ -12,20 +12,20 @@ describe Cinema do
   end
 
   describe '#show' do
+    before { allow(cinema).to receive(:movies).and_return(movies) }
+    subject { cinema.show }
+
     context 'when nothing to show' do
-      it do
-        allow(cinema).to receive(:movies).and_return([])
-        expect { cinema.show }.to raise_error NothingToShow
-      end
+      let(:movies) { [] }
+      it { expect { subject }.to raise_error NothingToShow }
     end
 
-    it do
-      allow(cinema).to receive(:peek_random)
-        .and_return(current_movie)
+    context 'when exactly one movie' do
+      let(:movies) { [current_movie] }
+      before { Timecop.freeze(Time.parse('18:15')) }
+      after { Timecop.return }
 
-      Timecop.freeze(Time.local(2017, 9, 14, 18, 15)) do
-        expect { cinema.show }.to output(/18:15/).to_stdout
-      end
+      it { expect { subject }.to output(/18:15/).to_stdout }
     end
   end
 end

@@ -29,18 +29,20 @@ class Netflix < Cinema
   end
 
   def how_much?(title)
-    movies = filter(title: title)
-    movies.map { |m| { m.title => PRICE_LIST[m.period] } } if movies.any?
+    filter(title: title)
+      .map { |m| [m.title, PRICE_LIST[m.period]] }.to_h
   end
 
   private
 
   def withdraw(amount)
-    raise insufficient_message(amount) if @account < amount
+    validate_enough!(amount)
     @account -= amount
   end
 
-  def insufficient_message(amount)
-    "Insufficient funds. Cost #{amount} and you have #{account}"
+  def validate_enough!(amount)
+    if account < amount
+      raise "Insufficient funds. Cost #{amount} and you have #{account}"
+    end
   end
 end

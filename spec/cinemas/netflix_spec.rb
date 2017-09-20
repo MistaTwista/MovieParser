@@ -54,7 +54,8 @@ describe Netflix do
 
   describe '#how_much?' do
     it do
-      expect(netflix.how_much? 'The Terminator').to eq [{"The Terminator" => 3}]
+      expect(netflix.how_much? 'The Terminator')
+        .to eq({ "The Terminator" => 3 })
     end
   end
 end
