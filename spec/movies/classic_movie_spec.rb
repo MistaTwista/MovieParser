@@ -1,12 +1,13 @@
 require 'movies/classic_movie'
+require 'ostruct'
 
 describe ClassicMovie do
   it_behaves_like 'a movie'
   include_context 'movie data'
   let(:collection) { double }
   let(:movie) { described_class.new(classic_movie, collection) }
-  let(:virus) { build(:movie, title: 'Virus') }
-  let(:alien) { build(:movie, title: 'Alien') }
+  let(:virus) { OpenStruct.new(title: 'Virus') }
+  let(:alien) { OpenStruct.new(title: 'Alien') }
   subject { movie }
 
   describe '#to_s' do
