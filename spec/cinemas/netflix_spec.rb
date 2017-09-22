@@ -4,6 +4,8 @@ require 'errors'
 
 describe Netflix do
   include_context 'movie data'
+  it_behaves_like 'a cashbox'
+
   let(:current_movie) { MovieBuilder.build_movie(new_movie) }
   let(:netflix) { Netflix.new('spec/data/movies.txt') }
   let(:premium_netflix) { Netflix.new('spec/data/movies.txt', 100500) }

@@ -1,8 +1,10 @@
-require 'irb'
-
 module Cashbox
   def account
     @account || 0
+  end
+
+  def cash
+    account
   end
 
   def take(who)
