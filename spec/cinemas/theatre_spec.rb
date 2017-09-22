@@ -11,9 +11,34 @@ describe Theatre do
   end
 
   describe '#buy_ticket' do
-    it do
-      expect(theatre.buy_ticket('The Terminator'))
-        output(/bought/).to_stdout
+    context 'when morning' do
+      it do
+        Timecop.freeze(Time.local(2017, 9, 14, 10, 15)) do
+          expect { theatre.buy_ticket('The Terminator') }
+            .to output(/bought/).to_stdout
+            .and change(theatre, :account).from(0).to(3)
+        end
+      end
+    end
+
+    context 'when day' do
+      it do
+        Timecop.freeze(Time.local(2017, 9, 14, 14, 15)) do
+          expect { theatre.buy_ticket('The Terminator') }
+            .to output(/bought/).to_stdout
+            .and change(theatre, :account).from(0).to(5)
+        end
+      end
+    end
+
+    context 'when evening' do
+      it do
+        Timecop.freeze(Time.local(2017, 9, 14, 18, 15)) do
+          expect { theatre.buy_ticket('The Terminator') }
+            .to output(/bought/).to_stdout
+            .and change(theatre, :account).from(0).to(10)
+        end
+      end
     end
   end
 

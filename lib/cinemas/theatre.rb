@@ -16,6 +16,12 @@ class Theatre < Cinema
     17..23 => :evening
   }
 
+  PRICE_LIST = {
+    morning: 3,
+    day: 5,
+    evening: 10
+  }
+
   def show(time = Time.now.strftime("%H:%M"))
     movies = filter_by_time(time)
     raise NothingToShow, time unless movies.any?
@@ -30,8 +36,7 @@ class Theatre < Cinema
   private
 
   def filter_by_time(time)
-    time = DateTime.parse(time).hour
-    _, period = TIME_TABLE.select{ |range| range.include? time }.first
+    period = get_period_from_time(time)
     raise "Theatre is closed in #{time}" if period.nil?
     filter(PERIODS[period])
   end
@@ -41,5 +46,17 @@ class Theatre < Cinema
       .select { |_, period| movie.matches_all?(PERIODS[period]) }
       .map(&:last)
       .uniq
+  end
+
+  def deposit_bought(title)
+    time = Time.now.strftime("%H:%M")
+    period = get_period_from_time(time)
+    deposit PRICE_LIST[period]
+  end
+
+  def get_period_from_time(time)
+    time = DateTime.parse(time).hour
+    _, period = TIME_TABLE.select{ |range| range.include? time }.first
+    period
   end
 end

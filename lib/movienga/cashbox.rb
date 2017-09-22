@@ -44,8 +44,7 @@ end
 
 module TicketMaster
   def buy_ticket(title)
-    # block here
-    deposit(30)
-    "You bought ticket to #{title}"
+    deposit_bought(title)
+    puts "You bought ticket to #{title}"
   end
 end
