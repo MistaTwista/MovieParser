@@ -4,6 +4,11 @@ require 'movies/ancient_movie'
 RSpec.describe MovieCollection do
   let(:no_file_collection) { MovieCollection.new('bad/path/file.txt') }
   let(:collection) { MovieCollection.new('spec/data/movies.txt') }
+  subject { collection.movies }
+
+  describe 'enumerable' do
+    its(:each) { is_expected.to be_instance_of Enumerator }
+  end
 
   describe 'parse file' do
     context 'when ok' do

@@ -2,6 +2,8 @@ require 'csv'
 require_relative 'movie'
 
 class MovieCollection
+  include Enumerable
+
   attr_reader :movies
 
   MOVIE_FIELDS = %i[url title year country date
@@ -35,6 +37,13 @@ class MovieCollection
   def has_genre?(genre)
     @collection_genres ||= all.map(&:genre).flatten.uniq
     @collection_genres.include?(genre)
+  end
+
+  def each(&block)
+    return movies.each unless block_given?
+    movies.each do |movie|
+      block.call(movie)
+    end
   end
 
   private

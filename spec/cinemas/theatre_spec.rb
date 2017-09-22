@@ -10,6 +10,13 @@ describe Theatre do
     it { expect(theatre.movies.class).to eq Array }
   end
 
+  describe '#buy_ticket' do
+    it do
+      expect(theatre.buy_ticket('The Terminator'))
+        output(/bought/).to_stdout
+    end
+  end
+
   describe '#show' do
     context 'when morning' do
       it_behaves_like 'choose movie by time',
@@ -70,7 +77,7 @@ describe Theatre do
               "Ancient Movie" => [:morning],
               "The Terminator" => []
             })
-          
+
       end
     end
   end

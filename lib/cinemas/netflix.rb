@@ -1,7 +1,10 @@
 require_relative 'cinema'
+require_relative '../movienga/cashbox'
 require_relative '../errors'
 
 class Netflix < Cinema
+  include OnlineTheatre
+
   PRICE_LIST = {
     new: 5,
     modern: 3,
@@ -9,11 +12,9 @@ class Netflix < Cinema
     ancient: 1
   }
 
-  attr_reader :account
-
   def initialize(filename, money_on_account = 0)
-    @account = money_on_account
     super(filename)
+    deposit(money_on_account)
   end
 
   def show(filter)
@@ -24,25 +25,8 @@ class Netflix < Cinema
     puts show_movie(movie)
   end
 
-  def pay(amount)
-    @account += amount
-  end
-
   def how_much?(title)
     filter(title: title)
       .map { |m| [m.title, PRICE_LIST[m.period]] }.to_h
-  end
-
-  private
-
-  def withdraw(amount)
-    validate_enough!(amount)
-    @account -= amount
-  end
-
-  def validate_enough!(amount)
-    if account < amount
-      raise "Insufficient funds. Cost #{amount} and you have #{account}"
-    end
   end
 end

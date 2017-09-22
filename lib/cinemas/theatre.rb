@@ -1,6 +1,9 @@
 require_relative 'cinema'
+require_relative '../movienga/cashbox'
 
 class Theatre < Cinema
+  include TicketMaster
+
   PERIODS = {
     morning: { period: :ancient },
     day: { genre: ['Comedy', 'Adventure'] },
