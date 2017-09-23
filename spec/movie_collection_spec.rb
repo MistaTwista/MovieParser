@@ -8,6 +8,9 @@ RSpec.describe MovieCollection do
 
   describe 'enumerable' do
     its(:each) { is_expected.to be_instance_of Enumerator }
+    its(:map) { is_expected.to be_instance_of Enumerator }
+    its(:select) { is_expected.to be_instance_of Enumerator }
+    its(:reject) { is_expected.to be_instance_of Enumerator }
   end
 
   describe 'parse file' do

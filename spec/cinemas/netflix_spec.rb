@@ -5,6 +5,7 @@ require 'errors'
 describe Netflix do
   include_context 'movie data'
   it_behaves_like 'a cashbox'
+  it_behaves_like 'a online theatre'
 
   let(:current_movie) { MovieBuilder.build_movie(new_movie) }
   let(:netflix) { Netflix.new('spec/data/movies.txt') }
@@ -14,8 +15,8 @@ describe Netflix do
 
   describe '#new' do
     it do
-      expect(premium_netflix.account).to eq 100500
-      expect(netflix.account).to eq 0
+      expect(premium_netflix.cash).to eq 100500
+      expect(netflix.cash).to eq 0
     end
   end
 
@@ -46,12 +47,8 @@ describe Netflix do
     it do
       expect{ netflix.show(genre: 'Comedy', period: :new) }
         .to output(/Dark Knight/).to_stdout
-        .and change(netflix, :account).from(10).to(5)
+        .and change(netflix, :cash).from(10).to(5)
     end
-  end
-
-  describe '#pay' do
-    it { expect { netflix.pay(10) }.to change{netflix.account}.from(0).to(10) }
   end
 
   describe '#how_much?' do

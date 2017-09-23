@@ -36,7 +36,7 @@ class Theatre < Cinema
   private
 
   def filter_by_time(time)
-    period = get_period_from_time(time)
+    period = period_from_time(time)
     raise "Theatre is closed in #{time}" if period.nil?
     filter(PERIODS[period])
   end
@@ -50,11 +50,11 @@ class Theatre < Cinema
 
   def deposit_bought(title)
     time = Time.now.strftime("%H:%M")
-    period = get_period_from_time(time)
+    period = period_from_time(time)
     deposit PRICE_LIST[period]
   end
 
-  def get_period_from_time(time)
+  def period_from_time(time)
     time = DateTime.parse(time).hour
     _, period = TIME_TABLE.select{ |range| range.include? time }.first
     period

@@ -1,10 +1,6 @@
 module Cashbox
-  def account
-    @account || 0
-  end
-
   def cash
-    account
+    @cash || 0
   end
 
   def take(who)
@@ -14,26 +10,26 @@ module Cashbox
 
   private
 
-  def account=(amount)
-    @account = amount
+  def cash=(amount)
+    @cash = amount
   end
 
   def make_encashment
-    self.account = 0
+    self.cash = 0
   end
 
   def withdraw(amount)
     validate_enough!(amount)
-    self.account -= amount
+    self.cash -= amount
   end
 
   def deposit(amount)
-    self.account += amount
+    self.cash += amount
   end
 
   def validate_enough!(amount)
-    if account < amount
-      raise "Insufficient funds. Cost #{amount} and you have #{account}"
+    if self.cash < amount
+      raise "Insufficient funds. Cost #{amount} and you have #{cash}"
     end
   end
 end
