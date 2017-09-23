@@ -41,9 +41,7 @@ class MovieCollection
 
   def each(&block)
     return movies.each unless block_given?
-    movies.each do |movie|
-      block.call(movie)
-    end
+    movies.each(&block)
   end
 
   private

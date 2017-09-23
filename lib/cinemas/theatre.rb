@@ -2,8 +2,6 @@ require_relative 'cinema'
 require_relative '../movienga/cashbox'
 
 class Theatre < Cinema
-  include TicketMaster
-
   PERIODS = {
     morning: { period: :ancient },
     day: { genre: ['Comedy', 'Adventure'] },
@@ -33,6 +31,13 @@ class Theatre < Cinema
     filter(title: title).map { |m| [m.title, when_to_show_movie(m)] }.to_h
   end
 
+  def buy_ticket(title)
+    time = Time.now.strftime("%H:%M")
+    period = period_from_time(time)
+    deposit_cash PRICE_LIST[period]
+    puts "You bought ticket to #{title}"
+  end
+
   private
 
   def filter_by_time(time)
@@ -46,12 +51,6 @@ class Theatre < Cinema
       .select { |_, period| movie.matches_all?(PERIODS[period]) }
       .map(&:last)
       .uniq
-  end
-
-  def deposit_bought(title)
-    time = Time.now.strftime("%H:%M")
-    period = period_from_time(time)
-    deposit PRICE_LIST[period]
   end
 
   def period_from_time(time)

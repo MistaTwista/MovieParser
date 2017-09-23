@@ -3,7 +3,6 @@ require 'timecop'
 
 describe Theatre do
   it_behaves_like 'a cashbox'
-  it_behaves_like 'a theatre'
   include_context 'movie data'
 
   let(:current_movie) { MovieBuilder.build_movie(ancient_movie) }
@@ -74,6 +73,38 @@ describe Theatre do
               "The Terminator" => []
             })
 
+      end
+    end
+  end
+
+  describe '#buy_ticket' do
+    context 'when morning' do
+      it do
+        Timecop.freeze(Time.local(2017, 9, 14, 10, 15)) do
+          expect { theatre.buy_ticket('The Terminator') }
+            .to output(/bought/).to_stdout
+            .and change(theatre, :cash).from(money(0)).to(money(3))
+        end
+      end
+    end
+
+    context 'when day' do
+      it do
+        Timecop.freeze(Time.local(2017, 9, 14, 14, 15)) do
+          expect { theatre.buy_ticket('The Terminator') }
+            .to output(/bought/).to_stdout
+            .and change(theatre, :cash).from(money(0)).to(money(5))
+        end
+      end
+    end
+
+    context 'when evening' do
+      it do
+        Timecop.freeze(Time.local(2017, 9, 14, 18, 15)) do
+          expect { theatre.buy_ticket('The Terminator') }
+            .to output(/bought/).to_stdout
+            .and change(theatre, :cash).from(money(0)).to(money(10))
+        end
       end
     end
   end

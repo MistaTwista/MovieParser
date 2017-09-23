@@ -1,6 +1,10 @@
+require 'money'
+
 module Cashbox
+  CURRENCY = 'USD'
+
   def cash
-    @cash || 0
+    @cash || money(0)
   end
 
   def take(who)
@@ -10,39 +14,19 @@ module Cashbox
 
   private
 
+  def money(amount)
+    Money.new(amount, CURRENCY)
+  end
+
   def cash=(amount)
-    @cash = amount
+    @cash = money(amount)
   end
 
   def make_encashment
-    self.cash = 0
+    self.cash = money(0)
   end
 
-  def withdraw(amount)
-    validate_enough!(amount)
-    self.cash -= amount
-  end
-
-  def deposit(amount)
-    self.cash += amount
-  end
-
-  def validate_enough!(amount)
-    if self.cash < amount
-      raise "Insufficient funds. Cost #{amount} and you have #{cash}"
-    end
-  end
-end
-
-module OnlineTheatre
-  def pay(amount)
-    deposit(amount)
-  end
-end
-
-module TicketMaster
-  def buy_ticket(title)
-    deposit_bought(title)
-    puts "You bought ticket to #{title}"
+  def deposit_cash(amount)
+    self.cash += money(amount)
   end
 end
