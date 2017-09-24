@@ -4,8 +4,6 @@ require_relative '../movienga/cashbox'
 require_relative '../errors'
 
 class Cinema < MovieCollection
-  include Cashbox
-
   attr_reader :movie
 
   def initialize(filename)

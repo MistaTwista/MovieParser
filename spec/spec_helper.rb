@@ -2,7 +2,6 @@ require 'rspec/its'
 require 'money'
 
 RSpec::Matchers.define_negated_matcher :not_change, :change
-I18n.enforce_available_locales = false
 
 def money(amount)
   Money.new(amount, 'USD')

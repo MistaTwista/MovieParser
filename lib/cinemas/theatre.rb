@@ -2,6 +2,8 @@ require_relative 'cinema'
 require_relative '../movienga/cashbox'
 
 class Theatre < Cinema
+  include Cashbox
+
   PERIODS = {
     morning: { period: :ancient },
     day: { genre: ['Comedy', 'Adventure'] },
@@ -32,8 +34,8 @@ class Theatre < Cinema
   end
 
   def buy_ticket(title)
-    time = Time.now.strftime("%H:%M")
-    period = period_from_time(time)
+    period = when?(title)[title].first
+    raise NothingToShow unless period
     deposit_cash PRICE_LIST[period]
     puts "You bought ticket to #{title}"
   end

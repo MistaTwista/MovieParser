@@ -3,7 +3,6 @@ require 'cinemas/cinema'
 require 'timecop'
 
 describe Cinema do
-  it_behaves_like 'a cashbox'
   include_context 'movie data'
 
   let(:current_movie) { MovieBuilder.build_movie(ancient_movie) }

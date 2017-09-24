@@ -2,7 +2,7 @@ require 'cinemas/theatre'
 require 'timecop'
 
 describe Theatre do
-  it_behaves_like 'a cashbox'
+  it_behaves_like 'a cashbox for offline'
   include_context 'movie data'
 
   let(:current_movie) { MovieBuilder.build_movie(ancient_movie) }
@@ -78,33 +78,35 @@ describe Theatre do
   end
 
   describe '#buy_ticket' do
-    context 'when morning' do
+    context 'when morning movie' do
       it do
-        Timecop.freeze(Time.local(2017, 9, 14, 10, 15)) do
-          expect { theatre.buy_ticket('The Terminator') }
-            .to output(/bought/).to_stdout
-            .and change(theatre, :cash).from(money(0)).to(money(3))
-        end
+        expect { theatre.buy_ticket('Ancient Movie') }
+          .to output(/bought/).to_stdout
+          .and change(theatre, :cash).from(money(0)).to(money(3))
       end
     end
 
-    context 'when day' do
+    context 'when day movie' do
       it do
-        Timecop.freeze(Time.local(2017, 9, 14, 14, 15)) do
-          expect { theatre.buy_ticket('The Terminator') }
-            .to output(/bought/).to_stdout
-            .and change(theatre, :cash).from(money(0)).to(money(5))
-        end
+        expect { theatre.buy_ticket('Comedy Movie') }
+          .to output(/bought/).to_stdout
+          .and change(theatre, :cash).from(money(0)).to(money(5))
+        # expect(theatre.buy_ticket('Alien')).to eq 'HUJ'
       end
     end
 
-    context 'when evening' do
+    context 'when evening movie' do
       it do
-        Timecop.freeze(Time.local(2017, 9, 14, 18, 15)) do
-          expect { theatre.buy_ticket('The Terminator') }
-            .to output(/bought/).to_stdout
-            .and change(theatre, :cash).from(money(0)).to(money(10))
-        end
+        expect { theatre.buy_ticket('Alien') }
+          .to output(/bought/).to_stdout
+          .and change(theatre, :cash).from(money(0)).to(money(10))
+      end
+    end
+
+    context 'when not showing' do
+      it do
+        expect { theatre.buy_ticket('The Terminator') }
+          .to raise_error NothingToShow
       end
     end
   end

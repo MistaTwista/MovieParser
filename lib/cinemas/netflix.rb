@@ -4,17 +4,7 @@ require_relative '../movienga/cashbox'
 require_relative '../errors'
 
 class Netflix < Cinema
-  CURRENCY = 'USD'
-
-  @@cash = Money.new(0, CURRENCY)
-
-  def self.cash
-    @@cash
-  end
-
-  def cash
-    @@cash
-  end
+  extend Cashbox
 
   PRICE_LIST = {
     new: 5,
@@ -58,7 +48,7 @@ class Netflix < Cinema
   def deposit_account(amount)
     amount = money(amount)
     self.account += amount
-    deposit_cash(amount)
+    self.class.deposit_cash(amount)
   end
 
   def withdraw_account(amount)
@@ -73,15 +63,5 @@ class Netflix < Cinema
     if account < amount
       raise "Insufficient funds. Cost #{amount} and you have #{account}"
     end
-  end
-
-  private
-
-  def money(amount)
-    Money.new(amount, CURRENCY)
-  end
-
-  def cash=(amount)
-    @@cash = amount
   end
 end
