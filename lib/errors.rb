@@ -1,5 +1,7 @@
-class NothingToShow < StandardError
-  def initialize(message = 'Movie not found')
-    super message
+module Movienga
+  class NothingToShow < StandardError
+    def initialize(message = 'Movie not found')
+      super message
+    end
   end
 end

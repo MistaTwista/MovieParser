@@ -2,11 +2,11 @@ require 'movie_builder'
 require 'cinemas/cinema'
 require 'timecop'
 
-describe Cinema do
+describe Movienga::Cinema do
   include_context 'movie data'
 
-  let(:current_movie) { MovieBuilder.build_movie(ancient_movie) }
-  let(:cinema) { Cinema.new('spec/data/movies.txt') }
+  let(:current_movie) { Movienga::MovieBuilder.build_movie(ancient_movie) }
+  let(:cinema) { described_class.new('spec/data/movies.txt') }
 
   describe '#new' do
     it { expect(cinema.movies.class).to be Array }
@@ -18,7 +18,7 @@ describe Cinema do
 
     context 'when nothing to show' do
       let(:movies) { [] }
-      it { expect { subject }.to raise_error NothingToShow }
+      it { expect { subject }.to raise_error Movienga::NothingToShow }
     end
 
     context 'when exactly one movie' do

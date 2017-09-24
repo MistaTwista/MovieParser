@@ -1,6 +1,6 @@
 require 'movies/modern_movie'
 
-describe ModernMovie do
+describe Movienga::ModernMovie do
   it_behaves_like 'a movie'
   include_context 'movie data'
   let(:movie) { described_class.new(modern_movie) }

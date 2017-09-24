@@ -1,11 +1,11 @@
 require 'cinemas/theatre'
 require 'timecop'
 
-describe Theatre do
+describe Movienga::Theatre do
   include_context 'movie data'
 
-  let(:current_movie) { MovieBuilder.build_movie(ancient_movie) }
-  let(:theatre) { Theatre.new('spec/data/movies_cut.txt') }
+  let(:current_movie) { Movienga::MovieBuilder.build_movie(ancient_movie) }
+  let(:theatre) { described_class.new('spec/data/movies_cut.txt') }
 
   describe '#new' do
     it { expect(theatre.movies.class).to eq Array }
@@ -37,7 +37,7 @@ describe Theatre do
     context 'when nothing to show' do
       it do
         allow(theatre).to receive(:filter_by_time).and_return([])
-        expect { theatre.show('6:05') }.to raise_error NothingToShow
+        expect { theatre.show('6:05') }.to raise_error Movienga::NothingToShow
       end
     end
 
@@ -103,13 +103,13 @@ describe Theatre do
     context 'when not showing' do
       it do
         expect { theatre.buy_ticket('The Terminator') }
-          .to raise_error NothingToShow
+          .to raise_error Movienga::NothingToShow
       end
     end
   end
 
   describe '#cash' do
-    let(:other_theatre) { Theatre.new('spec/data/movies_cut.txt') }
+    let(:other_theatre) { described_class.new('spec/data/movies_cut.txt') }
 
     it do
       expect { other_theatre.buy_ticket('Alien') }

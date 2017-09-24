@@ -1,7 +1,7 @@
 require 'movienga/cashbox'
 
 class CashboxedCinema
-  include Cashbox
+  include Movienga::Cashbox
 end
 
 describe CashboxedCinema do

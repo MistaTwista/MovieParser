@@ -1,7 +1,9 @@
 require_relative '../movie'
 
-class AncientMovie < Movie
-  def to_s
-    "#{title} - ancient movie (#{year})"
+module Movienga
+  class AncientMovie < Movie
+    def to_s
+      "#{title} - ancient movie (#{year})"
+    end
   end
 end
