@@ -1,6 +1,6 @@
 require_relative '../movie_builder'
 require_relative '../movie_collection'
-require_relative '../movienga/cashbox'
+require_relative '../cashbox'
 require_relative '../errors'
 
 module Movienga

@@ -1,5 +1,5 @@
 require_relative 'cinema'
-require_relative '../movienga/cashbox'
+require_relative '../cashbox'
 
 module Movienga
   class Theatre < Cinema

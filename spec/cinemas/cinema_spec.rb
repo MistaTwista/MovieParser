@@ -1,5 +1,5 @@
-require 'movie_builder'
-require 'cinemas/cinema'
+require 'movienga/movie_builder'
+require 'movienga/cinemas/cinema'
 require 'timecop'
 
 describe Movienga::Cinema do

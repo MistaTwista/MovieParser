@@ -1,4 +1,4 @@
-require 'cinemas/theatre'
+require 'movienga/cinemas/theatre'
 require 'timecop'
 
 describe Movienga::Theatre do

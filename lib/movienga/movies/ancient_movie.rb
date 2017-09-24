@@ -1,4 +1,4 @@
-require_relative '../movie'
+require_relative 'movie'
 
 module Movienga
   class AncientMovie < Movie

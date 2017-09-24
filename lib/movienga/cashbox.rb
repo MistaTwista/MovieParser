@@ -20,11 +20,11 @@ module Movienga
       self.cash += money(amount)
     end
 
-    private
-
     def money(amount)
       Money.new(amount, CURRENCY)
     end
+
+    private
 
     def cash=(amount)
       @cash = money(amount)

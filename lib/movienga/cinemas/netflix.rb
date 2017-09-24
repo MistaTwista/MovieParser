@@ -1,6 +1,6 @@
 require 'money'
 require_relative 'cinema'
-require_relative '../movienga/cashbox'
+require_relative '../cashbox'
 require_relative '../errors'
 
 module Movienga
@@ -64,6 +64,10 @@ module Movienga
       if account < amount
         raise "Insufficient funds. Cost #{amount} and you have #{account}"
       end
+    end
+
+    def money(amount)
+      self.class.money(amount)
     end
   end
 end

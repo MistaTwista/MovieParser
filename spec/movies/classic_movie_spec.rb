@@ -1,4 +1,4 @@
-require 'movies/classic_movie'
+require 'movienga/movies/classic_movie'
 require 'ostruct'
 
 describe Movienga::ClassicMovie do

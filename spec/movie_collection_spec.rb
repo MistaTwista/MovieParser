@@ -1,5 +1,5 @@
-require 'movie_collection'
-require 'movies/ancient_movie'
+require 'movienga/movie_collection'
+require 'movienga/movies/ancient_movie'
 
 RSpec.describe Movienga::MovieCollection do
   let(:no_file_collection) {  described_class.new('bad/path/file.txt') }

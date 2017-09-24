@@ -1,4 +1,4 @@
-require 'movie_builder'
+require 'movienga/movie_builder'
 
 describe Movienga::MovieBuilder do
   subject { movie_builder.class }

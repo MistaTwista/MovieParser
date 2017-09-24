@@ -1,5 +1,5 @@
 require 'csv'
-require_relative 'movie'
+require_relative 'movies/movie'
 
 module Movienga
   class MovieCollection

@@ -1,6 +1,6 @@
-require 'movie_builder'
-require 'cinemas/netflix'
-require 'errors'
+require 'movienga/movie_builder'
+require 'movienga/cinemas/netflix'
+require 'movienga/errors'
 
 describe Movienga::Netflix do
   include_context 'movie data'

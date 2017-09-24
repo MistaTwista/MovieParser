@@ -1,4 +1,4 @@
-require 'movies/new_movie'
+require 'movienga/movies/new_movie'
 
 describe Movienga::NewMovie do
   it_behaves_like 'a movie'
