@@ -3,7 +3,6 @@ require 'cinemas/netflix'
 require 'errors'
 
 describe Netflix do
-  it_behaves_like 'a cashbox for online'
   include_context 'movie data'
 
   let(:db_file) { 'spec/data/movies.txt' }
@@ -29,11 +28,11 @@ describe Netflix do
       netflix.account
     end
 
-    let(:netflix) { Netflix.new(db_file) }
+    let(:netflix) { Netflix.new(db_file, 500) }
     let(:premium_netflix) { Netflix.new(db_file, 100500) }
 
     it do
-      expect(Netflix.cash).to eq money(100500)
+      expect(Netflix.cash).to eq money(101000)
     end
   end
 

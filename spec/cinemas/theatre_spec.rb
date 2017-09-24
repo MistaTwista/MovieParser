@@ -2,7 +2,6 @@ require 'cinemas/theatre'
 require 'timecop'
 
 describe Theatre do
-  it_behaves_like 'a cashbox for offline'
   include_context 'movie data'
 
   let(:current_movie) { MovieBuilder.build_movie(ancient_movie) }
@@ -72,7 +71,6 @@ describe Theatre do
               "Ancient Movie" => [:morning],
               "The Terminator" => []
             })
-
       end
     end
   end
@@ -91,7 +89,6 @@ describe Theatre do
         expect { theatre.buy_ticket('Comedy Movie') }
           .to output(/bought/).to_stdout
           .and change(theatre, :cash).from(money(0)).to(money(5))
-        # expect(theatre.buy_ticket('Alien')).to eq 'HUJ'
       end
     end
 
@@ -108,6 +105,18 @@ describe Theatre do
         expect { theatre.buy_ticket('The Terminator') }
           .to raise_error NothingToShow
       end
+    end
+  end
+
+  describe '#cash' do
+    let(:other_theatre) { Theatre.new('spec/data/movies_cut.txt') }
+
+    it do
+      expect { other_theatre.buy_ticket('Alien') }
+        .to output(/bought/).to_stdout
+        .and change(other_theatre, :cash).from(money(0)).to(money(10))
+
+      expect(theatre.cash).to eq money(0)
     end
   end
 end
