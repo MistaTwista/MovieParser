@@ -1,9 +1,17 @@
-require 'movie_collection'
-require 'movies/ancient_movie'
+require 'movienga/movie_collection'
+require 'movienga/movies/ancient_movie'
 
-RSpec.describe MovieCollection do
-  let(:no_file_collection) { MovieCollection.new('bad/path/file.txt') }
-  let(:collection) { MovieCollection.new('spec/data/movies.txt') }
+RSpec.describe Movienga::MovieCollection do
+  let(:no_file_collection) {  described_class.new('bad/path/file.txt') }
+  let(:collection) {  described_class.new('spec/data/movies.txt') }
+  subject { collection }
+
+  describe 'enumerable' do
+    its(:each) { is_expected.to be_instance_of Enumerator }
+    its(:map) { is_expected.to be_instance_of Enumerator }
+    its(:select) { is_expected.to be_instance_of Enumerator }
+    its(:reject) { is_expected.to be_instance_of Enumerator }
+  end
 
   describe 'parse file' do
     context 'when ok' do
@@ -19,15 +27,15 @@ RSpec.describe MovieCollection do
 
   describe 'collection type' do
     context 'when default Movie' do
-      it { expect(collection.movies.first.class).to be Movie }
+      it { expect(collection.movies.first.class).to be Movienga::Movie }
     end
 
     context 'when custom type' do
       let(:collection) do
-        MovieCollection.new('spec/data/movies.txt', movie_class: AncientMovie)
+        described_class.new('spec/data/movies.txt', movie_class: Movienga::AncientMovie)
       end
 
-      it { expect(collection.movies.first.class).to be AncientMovie }
+      it { expect(collection.movies.first.class).to be Movienga::AncientMovie }
     end
   end
 
@@ -51,25 +59,40 @@ RSpec.describe MovieCollection do
   end
 
   describe '#filter' do
-    it do
-      expect(collection.filter(director: 'Nolan'))
-        .to all have_attributes(director: 'Christopher Nolan')
-      expect(collection.filter(actors: 'Brad Pitt'))
-        .to all have_attributes(actors: array_including('Brad Pitt'))
-      expect(collection.filter(genre: 'Comedy'))
-        .to all have_attributes(genre: array_including('Comedy'))
-      expect(collection.filter(year: 1957))
-        .to all have_attributes(year: 1957)
-      expect(collection.filter(month: 'January'))
-        .to all have_attributes(month: 'January')
-      expect(collection.filter(country: 'USA'))
-        .to all have_attributes(country: 'USA')
-      expect(collection.filter(actors: 'Arnold Schwarzenegger', year: 1991))
-        .to all have_attributes(actors: array_including('Arnold Schwarzenegger'), year: 1991)
-      expect(collection.filter(title: /terminator/i))
-        .to all have_attributes(title: /terminator/i)
-      expect(collection.filter(year: 2001..2005))
-        .to all have_attributes(year: 2001..2005)
+    context 'when filter is hash' do
+      it do
+        expect(collection.filter(director: 'Nolan'))
+          .to all have_attributes(director: 'Christopher Nolan')
+        expect(collection.filter(actors: 'Brad Pitt'))
+          .to all have_attributes(actors: array_including('Brad Pitt'))
+        expect(collection.filter(genre: 'Comedy'))
+          .to all have_attributes(genre: array_including('Comedy'))
+        expect(collection.filter(year: 1957))
+          .to all have_attributes(year: 1957)
+        expect(collection.filter(month: 'January'))
+          .to all have_attributes(month: 'January')
+        expect(collection.filter(country: 'USA'))
+          .to all have_attributes(country: 'USA')
+        expect(collection.filter(actors: 'Arnold Schwarzenegger', year: 1991))
+          .to all have_attributes(actors: array_including('Arnold Schwarzenegger'), year: 1991)
+        expect(collection.filter(title: /terminator/i))
+          .to all have_attributes(title: /terminator/i)
+        expect(collection.filter(year: 2001..2005))
+          .to all have_attributes(year: 2001..2005)
+      end
+    end
+
+    context 'when filter is proc' do
+      it do
+        expect(collection.filter { |m| m.title.include?('Terminator') })
+          .to all have_attributes(title: /terminator/i)
+        expect(collection.filter { |m| m.genre.include?('Action') })
+          .to all have_attributes(genre: array_including('Action'))
+        expect(collection.filter { |m| m.year == 2003 })
+          .to all have_attributes(year: 2003)
+        expect(collection.filter { |m| m.year > 2003 })
+          .to all have_attributes(year: 2003..Time.now.year)
+      end
     end
   end
 

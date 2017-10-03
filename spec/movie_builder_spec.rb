@@ -1,29 +1,29 @@
-require 'movie_builder'
+require 'movienga/movie_builder'
 
-describe MovieBuilder do
+describe Movienga::MovieBuilder do
   subject { movie_builder.class }
   include_context 'movie data'
-  let(:movie_builder) { MovieBuilder.build_movie(movie_hash) }
+  let(:movie_builder) { described_class.build_movie(movie_hash) }
 
   describe '.build_movie' do
     context 'when AncientMovie' do
       let(:movie_hash) { ancient_movie }
-      it { is_expected.to eq AncientMovie }
+      it { is_expected.to eq Movienga::AncientMovie }
     end
 
     context 'when ClassicMovie' do
       let(:movie_hash) { classic_movie }
-      it { is_expected.to eq ClassicMovie }
+      it { is_expected.to eq Movienga::ClassicMovie }
     end
 
     context 'when ModernMovie' do
       let(:movie_hash) { modern_movie }
-      it { is_expected.to eq ModernMovie }
+      it { is_expected.to eq Movienga::ModernMovie }
     end
 
     context 'when NewMovie' do
       let(:movie_hash) { new_movie }
-      it { is_expected.to eq NewMovie }
+      it { is_expected.to eq Movienga::NewMovie }
     end
 
     context 'when unknown movie age' do

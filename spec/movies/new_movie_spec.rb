@@ -1,6 +1,6 @@
-require 'movies/new_movie'
+require 'movienga/movies/new_movie'
 
-describe NewMovie do
+describe Movienga::NewMovie do
   it_behaves_like 'a movie'
   include_context 'movie data'
   let(:movie) { described_class.new(new_movie) }

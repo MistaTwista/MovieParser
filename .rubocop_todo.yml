@@ -1,0 +1,7 @@
+Lint/IneffectiveAccessModifier:
+  Exclude:
+    - 'lib/movienga/movies/movie.rb'
+
+Style/CaseEquality:
+  Exclude:
+    - 'lib/movienga/movies/movie.rb'
