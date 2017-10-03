@@ -1,24 +1,44 @@
-require 'movie_builder'
-require 'cinemas/netflix'
-require 'errors'
+require 'movienga/movie_builder'
+require 'movienga/cinemas/netflix'
+require 'movienga/errors'
 
-describe Netflix do
+describe Movienga::Netflix do
   include_context 'movie data'
-  let(:current_movie) { MovieBuilder.build_movie(new_movie) }
-  let(:netflix) { Netflix.new('spec/data/movies.txt') }
-  let(:premium_netflix) { Netflix.new('spec/data/movies.txt', 100500) }
+
+  let(:db_file) { 'spec/data/movies.txt' }
+  let(:current_movie) { Movienga::MovieBuilder.build_movie(new_movie) }
+  let(:netflix) { described_class.new(db_file) }
+  let(:premium_netflix) { described_class.new(db_file, 100500) }
   let(:initial_money) { 10 }
   let(:collection) { [current_movie] }
 
   describe '#new' do
+    before { described_class.send(:make_encashment) }
+    let(:netflix) { described_class.new(db_file) }
+
     it do
-      expect(premium_netflix.account).to eq 100500
-      expect(netflix.account).to eq 0
+      expect(described_class.cash).to eq 0
+    end
+  end
+
+  describe '#shared cashbox' do
+    before do
+      described_class.send(:make_encashment)
+      premium_netflix.account
+      netflix.account
+    end
+
+    let(:netflix) { described_class.new(db_file, 500) }
+    let(:premium_netflix) { described_class.new(db_file, 100500) }
+
+    it do
+      expect(described_class.cash).to eq money(101000)
     end
   end
 
   describe '#show' do
     before do
+      described_class.send(:make_encashment)
       netflix.pay(initial_money)
       allow(netflix).to receive(:filter).and_return(collection)
     end
@@ -36,26 +56,33 @@ describe Netflix do
       let(:collection) { [] }
 
       it do
-        expect{ netflix.show(genre: 'Comedy', period: :new) }
-          .to raise_error NothingToShow
+        expect { netflix.show(genre: 'Comedy', period: :new) }
+          .to raise_error Movienga::NothingToShow
       end
     end
 
     it do
-      expect{ netflix.show(genre: 'Comedy', period: :new) }
+      expect { netflix.show(genre: 'Comedy', period: :new) }
         .to output(/Dark Knight/).to_stdout
-        .and change(netflix, :account).from(10).to(5)
+        .and change(netflix, :account).from(money(10)).to(money(5))
+        .and not_change(described_class, :cash)
     end
   end
 
   describe '#pay' do
-    it { expect { netflix.pay(10) }.to change{netflix.account}.from(0).to(10) }
+    before { described_class.send(:make_encashment) }
+
+    it do
+      expect { netflix.pay(10) }
+        .to change(netflix, :account).from(money(0)).to(money(10))
+        .and change(described_class, :cash).from(money(0)).to(money(10))
+    end
   end
 
   describe '#how_much?' do
     it do
       expect(netflix.how_much? 'The Terminator')
-        .to eq({ "The Terminator" => 3 })
+        .to eq({ 'The Terminator' => 3 })
     end
   end
 end

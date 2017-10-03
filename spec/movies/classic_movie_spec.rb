@@ -1,7 +1,7 @@
-require 'movies/classic_movie'
+require 'movienga/movies/classic_movie'
 require 'ostruct'
 
-describe ClassicMovie do
+describe Movienga::ClassicMovie do
   it_behaves_like 'a movie'
   include_context 'movie data'
   let(:collection) { double }

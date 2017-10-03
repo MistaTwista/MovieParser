@@ -1,9 +1,17 @@
-require 'movie_collection'
-require 'movies/ancient_movie'
+require 'movienga/movie_collection'
+require 'movienga/movies/ancient_movie'
 
-RSpec.describe MovieCollection do
-  let(:no_file_collection) { MovieCollection.new('bad/path/file.txt') }
-  let(:collection) { MovieCollection.new('spec/data/movies.txt') }
+RSpec.describe Movienga::MovieCollection do
+  let(:no_file_collection) {  described_class.new('bad/path/file.txt') }
+  let(:collection) {  described_class.new('spec/data/movies.txt') }
+  subject { collection }
+
+  describe 'enumerable' do
+    its(:each) { is_expected.to be_instance_of Enumerator }
+    its(:map) { is_expected.to be_instance_of Enumerator }
+    its(:select) { is_expected.to be_instance_of Enumerator }
+    its(:reject) { is_expected.to be_instance_of Enumerator }
+  end
 
   describe 'parse file' do
     context 'when ok' do
@@ -19,15 +27,15 @@ RSpec.describe MovieCollection do
 
   describe 'collection type' do
     context 'when default Movie' do
-      it { expect(collection.movies.first.class).to be Movie }
+      it { expect(collection.movies.first.class).to be Movienga::Movie }
     end
 
     context 'when custom type' do
       let(:collection) do
-        MovieCollection.new('spec/data/movies.txt', movie_class: AncientMovie)
+        described_class.new('spec/data/movies.txt', movie_class: Movienga::AncientMovie)
       end
 
-      it { expect(collection.movies.first.class).to be AncientMovie }
+      it { expect(collection.movies.first.class).to be Movienga::AncientMovie }
     end
   end
 
