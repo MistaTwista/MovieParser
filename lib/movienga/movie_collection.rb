@@ -26,6 +26,7 @@ module Movienga
 
     def filter(params = {}, &block_params)
       return all.select(&block_params) if block_given?
+      return all.select(&params) if params.is_a? Proc
 
       all.select do |movie|
         movie.matches_all? params

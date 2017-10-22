@@ -7,3 +7,4 @@ gem 'rspec'
 gem 'rspec-its'
 gem 'rubocop'
 gem 'timecop'
+gem 'guard-rspec', require: false
