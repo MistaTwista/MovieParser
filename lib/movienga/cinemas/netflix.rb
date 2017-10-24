@@ -45,14 +45,15 @@ module Movienga
           if [true, false].include?(value)
             defined_filters[key]
           else
-            flip(defined_filters[key]).curry[value]
+            flip(defined_filters[key], value)
           end
         end
       end
     end
 
-    def flip(flippable)
-      proc { |first, second| flippable.(second, first) }
+    # TODO: rename method
+    def flip(flippable, value)
+      proc { |collection| flippable.(collection, value) }
     end
 
     def how_much?(title)
@@ -70,7 +71,7 @@ module Movienga
 
     def define_filter(filter_name, from: nil, arg: nil, &filter_proc)
       reusable_filter = if from && arg
-        flip(defined_filters[from]).curry[arg]
+        flip(defined_filters[from], arg)
       end
 
       defined_filters[filter_name] = reusable_filter || filter_proc
