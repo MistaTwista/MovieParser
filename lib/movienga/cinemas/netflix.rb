@@ -19,41 +19,18 @@ module Movienga
       pay(money_on_account)
     end
 
-    def show(params = {}, &block)
-      movies = filter(params, &block)
+    def show(**filters, &block)
+      movies = filter(filters, &block)
       raise NothingToShow, filter unless movies.any?
       movie = peek_random(movies)
       withdraw_account PRICE_LIST[movie.period]
       puts show_movie(movie)
     end
 
-    def filter(params = {}, &block)
-      selected_filter = select_filter(params, &block)
-      super(selected_filter)
-    end
-
-    def select_filter(filter, &block)
-      return block if block_given?
-      user_filters = prepare_filters(filter)
-      return user_filters.first if user_filters.any?
-      filter
-    end
-
-    def prepare_filters(filter)
-      filter.map do |key, value|
-        if defined_filters[key]
-          if [true, false].include?(value)
-            defined_filters[key]
-          else
-            flip(defined_filters[key], value)
-          end
-        end
-      end
-    end
-
-    # TODO: rename method
-    def flip(flippable, value)
-      proc { |collection| flippable.(collection, value) }
+    def filter(**filters, &block)
+      selected = select_filter(**filters, &block)
+      return super { |movie| selected.call(movie) } if selected.is_a? Proc
+      super(selected)
     end
 
     def how_much?(title)
@@ -71,16 +48,42 @@ module Movienga
 
     def define_filter(filter_name, from: nil, arg: nil, &filter_proc)
       reusable_filter = if from && arg
-        flip(defined_filters[from], arg)
-      end
+                          curry_second_proc_value(defined_filters[from], arg)
+                        end
 
       defined_filters[filter_name] = reusable_filter || filter_proc
     end
 
     private
 
+    def select_filter(**filter, &block)
+      return block if block_given?
+      user_filters = select_from_defined(filter)
+      return combine_filters(user_filters) if user_filters.any?
+      filter
+    end
+
+    def select_from_defined(filter)
+      filter.reject { |key, _| defined_filters[key].nil? }
+            .map do |key, value|
+              if [true, false].include?(value)
+                defined_filters[key]
+              else
+                curry_second_proc_value(defined_filters[key], value)
+              end
+            end.compact
+    end
+
+    def curry_second_proc_value(proc_to_curry, value)
+      proc { |object_to_check| proc_to_curry.call(object_to_check, value) }
+    end
+
+    def combine_filters(filters)
+      proc { |object_to_check| filters.all? { |p| p.call(object_to_check) } }
+    end
+
     def defined_filters
-      @filters ||= {}
+      @defined_filters ||= {}
     end
 
     def account=(amount)

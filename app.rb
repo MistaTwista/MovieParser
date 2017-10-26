@@ -19,8 +19,8 @@ netflix.show(gt_year: 2014)
 netflix.show(comedies: true)
 netflix.show do |movie|
   !movie.title.include?('Terminator') &&
-  movie.genre.include?('Action') &&
-  movie.year > 2003
+    movie.genre.include?('Action') &&
+    movie.year > 2003
 end
 
 # puts "You have #{netflix.account}"

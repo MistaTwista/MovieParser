@@ -24,9 +24,8 @@ module Movienga
          .compact.sort_by(&field)
     end
 
-    def filter(params = {}, &block_params)
-      return all.select(&block_params) if block_given?
-      return all.select(&params) if params.is_a? Proc
+    def filter(params = {}, &block)
+      return all.select(&block) if block_given?
 
       all.select do |movie|
         movie.matches_all? params

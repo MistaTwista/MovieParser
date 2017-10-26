@@ -70,7 +70,7 @@ module Movienga
       when String
         value.include? filter_value
       else
-        filter_value === value
+        filter_value === value # rubocop:disable Style/CaseEquality
       end
     end
 
