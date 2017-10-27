@@ -29,8 +29,7 @@ module Movienga
 
     def filter(**filters, &block)
       filter = prepare_filter(**filters, &block)
-      return super { |movie| filter.call(movie) } if filter.is_a? Proc
-      super(filter)
+      super { |movie| filter.call(movie) }
     end
 
     def how_much?(title)
@@ -59,8 +58,7 @@ module Movienga
     def prepare_filter(**filter, &block)
       return block if block_given?
       filters = select_from_defined(filter).concat(select_from_native(filter))
-      return combine_filters(filters) if filters.any?
-      filter
+      combine_filters(filters)
     end
 
     def select_from_native(filter)
