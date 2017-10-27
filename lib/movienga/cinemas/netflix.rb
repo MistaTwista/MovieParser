@@ -28,9 +28,9 @@ module Movienga
     end
 
     def filter(**filters, &block)
-      selected = select_filter(**filters, &block)
-      return super { |movie| selected.call(movie) } if selected.is_a? Proc
-      super(selected)
+      filter = prepare_filter(**filters, &block)
+      return super { |movie| filter.call(movie) } if filter.is_a? Proc
+      super(filter)
     end
 
     def how_much?(title)
@@ -48,7 +48,7 @@ module Movienga
 
     def define_filter(filter_name, from: nil, arg: nil, &filter_proc)
       reusable_filter = if from && arg
-                          curry_second_proc_value(defined_filters[from], arg)
+                          curry_filter(defined_filters[from], arg)
                         end
 
       defined_filters[filter_name] = reusable_filter || filter_proc
@@ -56,11 +56,17 @@ module Movienga
 
     private
 
-    def select_filter(**filter, &block)
+    def prepare_filter(**filter, &block)
       return block if block_given?
-      user_filters = select_from_defined(filter)
-      return combine_filters(user_filters) if user_filters.any?
+      filters = select_from_defined(filter).concat(select_from_native(filter))
+      return combine_filters(filters) if filters.any?
       filter
+    end
+
+    def select_from_native(filter)
+      filter.map do |k, v|
+        make_movie_filter(k, v) if defined_filters[k].nil?
+      end.compact
     end
 
     def select_from_defined(filter)
@@ -69,17 +75,21 @@ module Movienga
               if [true, false].include?(value)
                 defined_filters[key]
               else
-                curry_second_proc_value(defined_filters[key], value)
+                curry_filter(defined_filters[key], value)
               end
             end.compact
     end
 
-    def curry_second_proc_value(proc_to_curry, value)
+    def curry_filter(proc_to_curry, value)
       proc { |object_to_check| proc_to_curry.call(object_to_check, value) }
     end
 
     def combine_filters(filters)
       proc { |object_to_check| filters.all? { |p| p.call(object_to_check) } }
+    end
+
+    def make_movie_filter(field, value)
+      proc { |movie| movie.matches?(field, value) }
     end
 
     def defined_filters

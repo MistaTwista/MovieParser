@@ -112,6 +112,22 @@ describe Movienga::Netflix do
         expect(netflix.filter(comedies: true))
           .to all have_attributes(genre: array_including('Comedy'))
       end
+
+      it do
+        expect(netflix.filter(early: true, comedies: true))
+          .to all have_attributes(
+            year: 2014..Time.now.year,
+            genre: array_including('Comedy')
+          )
+      end
+
+      it do
+        expect(netflix.filter(early: true, genre: 'Cemedy'))
+          .to all have_attributes(
+            year: 2014..Time.now.year,
+            genre: array_including('Comedy')
+          )
+      end
     end
   end
 
