@@ -15,10 +15,9 @@ module Movienga
     end
 
     def month
+      return nil unless /^\d{4}-\d{2}/.match?(to_h[:date])
       month_from_date = Date.strptime(to_h[:date], '%Y-%m').mon
       Date::MONTHNAMES[month_from_date]
-    rescue ArgumentError
-      nil
     end
 
     def year
@@ -42,9 +41,8 @@ module Movienga
     end
 
     def date
+      return nil unless /^\d{4}-\d{2}-\d{2}/.match?(to_h[:date])
       Date.strptime(to_h[:date])
-    rescue ArgumentError
-      nil
     end
 
     def period
