@@ -46,48 +46,38 @@ module Movienga
     end
 
     def define_filter(filter_name, from: nil, arg: nil, &filter_proc)
-      reusable_filter = if from && arg
-                          curry_filter(defined_filters[from], arg)
-                        end
-
+      reusable_filter = curry_filter(defined_filters[from], arg) if from && arg
       defined_filters[filter_name] = reusable_filter || filter_proc
     end
 
     private
 
-    def prepare_filter(**filter, &block)
-      return block if block_given?
-      filters = select_from_defined(filter).concat(select_from_native(filter))
-      combine_filters(filters)
+    def prepare_filter(**filters, &block)
+      defineds, natives = filters.partition { |n, _| defined_filters.key?(n) }
+      combine_filters(
+        [
+          *defineds.map { |f, v| make_defined_filter(f, v) },
+          *natives.map { |f, v| make_movie_filter(f, v) },
+          block
+        ].compact
+      )
     end
 
-    def select_from_native(filter)
-      filter.map do |k, v|
-        make_movie_filter(k, v) if defined_filters[k].nil?
-      end.compact
-    end
-
-    def select_from_defined(filter)
-      filter.reject { |key, _| defined_filters[key].nil? }
-            .map do |key, value|
-              if [true, false].include?(value)
-                defined_filters[key]
-              else
-                curry_filter(defined_filters[key], value)
-              end
-            end.compact
+    def make_defined_filter(key, value)
+      filter = defined_filters.fetch(key)
+      [true, false].include?(value) ? filter : curry_filter(filter, value)
     end
 
     def curry_filter(proc_to_curry, value)
-      proc { |object_to_check| proc_to_curry.call(object_to_check, value) }
+      ->(object_to_check) { proc_to_curry.call(object_to_check, value) }
     end
 
     def combine_filters(filters)
-      proc { |object_to_check| filters.all? { |p| p.call(object_to_check) } }
+      ->(object_to_check) { filters.all? { |p| p.call(object_to_check) } }
     end
 
     def make_movie_filter(field, value)
-      proc { |movie| movie.matches?(field, value) }
+      ->(movie) { movie.matches?(field, value) }
     end
 
     def defined_filters

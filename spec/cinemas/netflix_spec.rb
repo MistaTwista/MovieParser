@@ -62,7 +62,7 @@ describe Movienga::Netflix do
     end
 
     context 'when block given' do
-      xit do
+      it do
         expect { netflix.show { |m| m.year == 2003 } }
           .to output(/Dark Knight/).to_stdout
       end
