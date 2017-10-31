@@ -1,11 +1,31 @@
 require 'date'
+require 'virtus'
+
+class MovieLength < Virtus::Attribute
+  def coerce(value)
+    value.to_i
+  end
+end
+
+class StringArray < Virtus::Attribute
+  def coerce(value)
+    value.split(',')
+  end
+end
 
 module Movienga
   class Movie
     attr_reader :to_h
+    include Virtus.model
+
+    attribute :length, MovieLength
+    attribute :rate, Float
+    attribute :genre, StringArray
+    attribute :actors, StringArray
 
     def initialize(movie, collection = nil)
       @to_h = movie
+      self.attributes = movie
       @collection = collection
     end
 
@@ -22,22 +42,6 @@ module Movienga
 
     def year
       Date.strptime(to_h[:year], '%Y').year
-    end
-
-    def length
-      to_h[:length].to_i
-    end
-
-    def rate
-      to_h[:rate].to_f
-    end
-
-    def genre
-      to_h[:genre].split(',')
-    end
-
-    def actors
-      to_h[:actors].split(',')
     end
 
     def date
@@ -99,7 +103,7 @@ module Movienga
     end
 
     def collection_has_genre?(genre)
-      return true if @collection.nil?
+      return false if @collection.nil?
       @collection.has_genre?(genre)
     end
 

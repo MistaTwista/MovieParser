@@ -8,7 +8,9 @@ shared_examples 'a movie' do
 
   describe '#has_genre' do
     it do
-      expect(movie.has_genre?('Drama')).to be_truthy
+      allow(collection).to receive(:has_genre?).and_return(true)
+
+      expect(movie_with_collection.has_genre?('Drama')).to be_truthy
     end
 
     it 'raise error if no such genre in collection' do
