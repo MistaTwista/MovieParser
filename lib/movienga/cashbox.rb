@@ -5,14 +5,14 @@ I18n.enforce_available_locales = false
 
 module Movienga
   module Cashbox
-    CURRENCY = 'USD'
+    CURRENCY = 'USD'.freeze
 
     def cash
       @cash || money(0)
     end
 
     def take(who)
-      raise 'Everybody be cool, this is a robbery!' if who != "Bank"
+      raise 'Everybody be cool, this is a robbery!' if who != 'Bank'
       make_encashment
     end
 

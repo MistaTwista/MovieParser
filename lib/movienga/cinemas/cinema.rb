@@ -8,7 +8,7 @@ module Movienga
     attr_reader :movie
 
     def initialize(filename)
-      @movies = parse_from_file(filename).map{ |movie| build_movie(movie) }
+      @movies = parse_from_file(filename).map { |movie| build_movie(movie) }
     end
 
     def show
@@ -24,7 +24,7 @@ module Movienga
     end
 
     def show_movie(movie)
-      "Now showing: #{movie.to_s} #{movie.from_to}"
+      "Now showing: #{movie} #{movie.from_to}"
     end
 
     def build_movie(movie_hash)

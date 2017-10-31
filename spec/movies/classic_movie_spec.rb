@@ -15,7 +15,8 @@ describe Movienga::ClassicMovie do
       expect(collection)
         .to receive(:filter).and_return([virus, alien])
 
-      is_expected.to match(/Virus, Alien/)
+      is_expected
+        .to eq '12 Angry Men - classic movie, director: Sidney Lumet, also: Virus, Alien'
     end
   end
 

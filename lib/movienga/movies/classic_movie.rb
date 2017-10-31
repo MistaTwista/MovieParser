@@ -3,7 +3,12 @@ require_relative 'movie'
 module Movienga
   class ClassicMovie < Movie
     def to_s
-      "#{title} - classic movie, director: #{director}, also: #{other_directors_movies}"
+      format(
+        '%s - classic movie, director: %s, also: %s',
+        title,
+        director,
+        other_directors_movies
+      )
     end
 
     private

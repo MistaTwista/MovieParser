@@ -11,7 +11,7 @@ module Movienga
     def years_ago
       this_year = Time.now.year
       return "#{this_year - year} years ago" if this_year > year
-      ""
+      ''
     end
   end
 end

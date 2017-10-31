@@ -61,11 +61,73 @@ describe Movienga::Netflix do
       end
     end
 
+    context 'when block given' do
+      it do
+        expect { netflix.show { |m| m.year == 2003 } }
+          .to output(/Dark Knight/).to_stdout
+      end
+    end
+
     it do
       expect { netflix.show(genre: 'Comedy', period: :new) }
         .to output(/Dark Knight/).to_stdout
         .and change(netflix, :account).from(money(10)).to(money(5))
         .and not_change(described_class, :cash)
+    end
+  end
+
+  describe '#filter' do
+    context 'when block given' do
+      it do
+        expect(netflix.filter { |m| m.title.include?('Terminator') })
+          .to all have_attributes(title: /terminator/i)
+        expect(netflix.filter { |m| m.genre.include?('Action') })
+          .to all have_attributes(genre: array_including('Action'))
+        expect(netflix.filter { |m| m.year == 2003 })
+          .to all have_attributes(year: 2003)
+        expect(netflix.filter { |m| m.year > 2003 })
+          .to all have_attributes(year: 2003..Time.now.year)
+      end
+    end
+
+    context 'when custom filter defined' do
+      before do
+        netflix.define_filter(:early) { |m| m.year > 2014 }
+        netflix.define_filter(:gt_year) { |m, year| m.year > year }
+        netflix.define_filter(:style) { |m, genre| m.genre.include?(genre) }
+        netflix.define_filter(:comedies, from: :style, arg: 'Comedy')
+      end
+
+      it do
+        expect(netflix.filter(early: true))
+          .to all have_attributes(year: 2014..Time.now.year)
+      end
+
+      it do
+        expect(netflix.filter(gt_year: 2014))
+          .to all have_attributes(year: 2014..Time.now.year)
+      end
+
+      it do
+        expect(netflix.filter(comedies: true))
+          .to all have_attributes(genre: array_including('Comedy'))
+      end
+
+      it do
+        expect(netflix.filter(early: true, comedies: true))
+          .to all have_attributes(
+            year: 2014..Time.now.year,
+            genre: array_including('Comedy')
+          )
+      end
+
+      it do
+        expect(netflix.filter(early: true, genre: 'Cemedy'))
+          .to all have_attributes(
+            year: 2014..Time.now.year,
+            genre: array_including('Comedy')
+          )
+      end
     end
   end
 

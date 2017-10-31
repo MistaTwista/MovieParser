@@ -12,19 +12,24 @@ module Movienga
       modern: 3,
       classic: 1.5,
       ancient: 1
-    }
+    }.freeze
 
     def initialize(filename, money_on_account = 0)
       super(filename)
       pay(money_on_account)
     end
 
-    def show(filter)
-      movies = filter(filter)
+    def show(**filters, &block)
+      movies = filter(filters, &block)
       raise NothingToShow, filter unless movies.any?
       movie = peek_random(movies)
       withdraw_account PRICE_LIST[movie.period]
       puts show_movie(movie)
+    end
+
+    def filter(**filters, &block)
+      filter = prepare_filter(**filters, &block)
+      super { |movie| filter.call(movie) }
     end
 
     def how_much?(title)
@@ -40,7 +45,44 @@ module Movienga
       @account || money(0)
     end
 
+    def define_filter(filter_name, from: nil, arg: nil, &filter_proc)
+      reusable_filter = curry_filter(defined_filters[from], arg) if from && arg
+      defined_filters[filter_name] = reusable_filter || filter_proc
+    end
+
     private
+
+    def prepare_filter(**filters, &block)
+      defineds, natives = filters.partition { |n, _| defined_filters.key?(n) }
+      combine_filters(
+        [
+          *defineds.map { |f, v| make_defined_filter(f, v) },
+          *natives.map { |f, v| make_movie_filter(f, v) },
+          block
+        ].compact
+      )
+    end
+
+    def make_defined_filter(key, value)
+      filter = defined_filters.fetch(key)
+      [true, false].include?(value) ? filter : curry_filter(filter, value)
+    end
+
+    def curry_filter(proc_to_curry, value)
+      ->(object_to_check) { proc_to_curry.call(object_to_check, value) }
+    end
+
+    def combine_filters(filters)
+      ->(object_to_check) { filters.all? { |p| p.call(object_to_check) } }
+    end
+
+    def make_movie_filter(field, value)
+      ->(movie) { movie.matches?(field, value) }
+    end
+
+    def defined_filters
+      @defined_filters ||= {}
+    end
 
     def account=(amount)
       @account = money(amount)
@@ -59,11 +101,8 @@ module Movienga
     end
 
     def validate_enough!(amount)
-      amount = money(amount)
-
-      if account < amount
-        raise "Insufficient funds. Cost #{amount} and you have #{account}"
-      end
+      return if account > money(amount)
+      raise "Insufficient funds. Cost #{amount} and you have #{account}"
     end
 
     def money(amount)

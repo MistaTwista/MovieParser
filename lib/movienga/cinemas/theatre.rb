@@ -7,23 +7,23 @@ module Movienga
 
     PERIODS = {
       morning: { period: :ancient },
-      day: { genre: ['Comedy', 'Adventure'] },
-      evening: { genre: ['Drama', 'Horror'] }
-    }
+      day: { genre: %w[Comedy Adventure] },
+      evening: { genre: %w[Drama Horror] }
+    }.freeze
 
     TIME_TABLE = {
       9...13 => :morning,
       13...17 => :day,
       17..23 => :evening
-    }
+    }.freeze
 
     PRICE_LIST = {
       morning: 3,
       day: 5,
       evening: 10
-    }
+    }.freeze
 
-    def show(time = Time.now.strftime("%H:%M"))
+    def show(time = Time.now.strftime('%H:%M'))
       movies = filter_by_time(time)
       raise NothingToShow, time unless movies.any?
       movie = peek_random(movies)
@@ -58,7 +58,7 @@ module Movienga
 
     def period_from_time(time)
       time = DateTime.parse(time).hour
-      _, period = TIME_TABLE.select{ |range| range.include? time }.first
+      _, period = TIME_TABLE.select { |range| range.include? time }.first
       period
     end
   end

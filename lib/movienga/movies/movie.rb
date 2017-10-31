@@ -15,11 +15,13 @@ module Movienga
     end
 
     def month
-      Date::MONTHNAMES[Date.strptime(to_h[:date], "%Y-%m").mon] rescue nil
+      return nil unless /^\d{4}-\d{2}/.match?(to_h[:date])
+      month_from_date = Date.strptime(to_h[:date], '%Y-%m').mon
+      Date::MONTHNAMES[month_from_date]
     end
 
     def year
-      Date.strptime(to_h[:year], "%Y").year
+      Date.strptime(to_h[:year], '%Y').year
     end
 
     def length
@@ -39,7 +41,8 @@ module Movienga
     end
 
     def date
-      Date.strptime(to_h[:date]) rescue nil
+      return nil unless /^\d{4}-\d{2}-\d{2}/.match?(to_h[:date])
+      Date.strptime(to_h[:date])
     end
 
     def period
@@ -65,12 +68,13 @@ module Movienga
       when String
         value.include? filter_value
       else
-        filter_value === value
+        filter_value === value # rubocop:disable Style/CaseEquality
       end
     end
 
     def to_s
-      format('%s (%s) %i; %s; %i min',
+      format(
+        '%s (%s) %i; %s; %i min',
         title,
         actors.join(', '),
         year,
@@ -87,11 +91,11 @@ module Movienga
 
     def self.period
       period = name.scan(/(\w+)Movie/).flatten.first
-      period.downcase.to_sym unless period.nil?
+      period&.downcase&.to_sym
     end
 
     def format_time(time)
-      time.strftime("%H:%M")
+      time.strftime('%H:%M')
     end
 
     def collection_has_genre?(genre)
