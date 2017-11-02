@@ -147,4 +147,20 @@ describe Movienga::Netflix do
         .to eq({ 'The Terminator' => 3 })
     end
   end
+
+  fdescribe 'metaprogramming' do
+    context '#by_genre' do
+      it do
+        expect(netflix.by_genre.comedy)
+          .to all have_attributes(genre: array_including('Comedy'))
+      end
+    end
+
+    context '#by_country' do
+      it do
+        expect(netflix.by_country.usa)
+          .to all have_attributes(country: 'USA')
+      end
+    end
+  end
 end

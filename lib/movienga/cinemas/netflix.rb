@@ -14,23 +14,16 @@ module Movienga
 
     def create_methods(genres)
       genres.each do |genre|
-        self.define_singleton_method(genre.downcase.to_sym) do
-          collection.filter(genre: genre)
-        end
+        mtd = ->() { collection.filter(genre: genre) }
+        self.define_singleton_method(genre.downcase.to_sym, mtd)
       end
     end
 
     def method_missing(name, **args)
-      movies = collection.filter do |movie|
-        movie.country.to_s.match? /#{name}/i
-      end
+      movies = collection.filter(country: /#{name}/i)
       return movies if movies
       super
     end
-
-    # def respond_to_missing?(method_name, include_private = false)
-    #   to_h.key?(method_name) || super
-    # end
   end
 
   class Netflix < Cinema
