@@ -108,7 +108,6 @@ module Movienga
     end
 
     def method_missing(name, *args)
-      name = name.to_sym
       return to_h[name] if to_h.key?(name)
       super
     end

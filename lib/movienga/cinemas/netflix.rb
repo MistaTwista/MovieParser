@@ -4,8 +4,45 @@ require_relative '../cashbox'
 require_relative '../errors'
 
 module Movienga
+  class HelperCinema
+    attr_reader :collection
+
+    def initialize(collection)
+      @collection = collection
+      create_methods(collection.genres)
+    end
+
+    def create_methods(genres)
+      genres.each do |genre|
+        self.define_singleton_method(genre.downcase.to_sym) do
+          collection.filter(genre: genre)
+        end
+      end
+    end
+
+    def method_missing(name, **args)
+      movies = collection.filter do |movie|
+        movie.country.to_s.match? /#{name}/i
+      end
+      return movies if movies
+      super
+    end
+
+    # def respond_to_missing?(method_name, include_private = false)
+    #   to_h.key?(method_name) || super
+    # end
+  end
+
   class Netflix < Cinema
     extend Cashbox
+
+    def by_genre
+      HelperCinema.new(self)
+    end
+
+    def by_country
+      HelperCinema.new(self)
+    end
 
     PRICE_LIST = {
       new: 5,

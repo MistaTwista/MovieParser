@@ -22,6 +22,9 @@ netflix.show do |movie|
     movie.genre.include?('Action') &&
     movie.year > 2003
 end
+puts netflix.by_genre.comedy
+puts netflix.by_genre.crime
+puts netflix.by_country.usa
 
 # puts "You have #{netflix.account}"
 # netflix.show(genre: 'Comedy', period: :new)
