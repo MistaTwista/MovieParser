@@ -47,7 +47,7 @@ module Movienga
     end
 
     def genres
-      @collection_genres ||= all.map(&:genre).flatten.uniq
+      @genres ||= all.map(&:genre).flatten.uniq
     end
 
     private

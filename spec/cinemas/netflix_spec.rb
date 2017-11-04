@@ -161,6 +161,15 @@ describe Movienga::Netflix do
         expect(netflix.by_country.usa)
           .to all have_attributes(country: 'USA')
       end
+
+      it do
+        expect(netflix.by_country.respond_to?(:usa)).to be_truthy
+      end
+
+      it do
+        expect { netflix.by_country.usa(some: :argument) }
+          .to raise_error(ArgumentError, /doesn't receive any arguments/)
+      end
     end
   end
 end

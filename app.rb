@@ -9,7 +9,6 @@ require_relative 'lib/movienga/cinemas/theatre'
 
 netflix = Movienga::Netflix.new(filename)
 netflix.pay(100)
-# puts netflix.by_country.usa(make: :lol)
 
 # theatre = Movienga::Theatre.new(filename)
 # theatre.show('13:45')

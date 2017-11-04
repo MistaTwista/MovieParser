@@ -19,10 +19,20 @@ module Movienga
       end
     end
 
-    def method_missing(name, **args)
-      movies = collection.filter(country: /#{name}/i)
-      return movies if movies
+    def method_missing(method, **args)
+      movies = collection.filter(country: /#{method}/i)
+      if movies.any? && args.any?
+        raise ArgumentError.new(
+          "Method `#{method}` doesn't receive any arguments."
+        )
+      end
+
+      return movies if movies.any?
       super
+    end
+
+    def respond_to_missing?(method, include_private = false)
+      collection.countries.select { |c| c =~ /#{method}/i }
     end
   end
 
@@ -78,6 +88,10 @@ module Movienga
     def define_filter(filter_name, from: nil, arg: nil, &filter_proc)
       reusable_filter = curry_filter(defined_filters[from], arg) if from && arg
       defined_filters[filter_name] = reusable_filter || filter_proc
+    end
+
+    def countries
+      @countries ||= all.map(&:country).flatten.uniq
     end
 
     private
