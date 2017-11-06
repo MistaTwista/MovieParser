@@ -148,7 +148,7 @@ describe Movienga::Netflix do
     end
   end
 
-  fdescribe 'metaprogramming' do
+  describe 'metaprogramming' do
     context '#by_genre' do
       it do
         expect(netflix.by_genre.comedy)

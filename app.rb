@@ -10,21 +10,23 @@ require_relative 'lib/movienga/cinemas/theatre'
 netflix = Movienga::Netflix.new(filename)
 netflix.pay(100)
 
-# theatre = Movienga::Theatre.new(filename)
-# theatre.show('13:45')
-# when_to_show = theatre.when?('Life Is Beautiful')
-# puts "'Life Is Beautiful' showing on #{when_to_show}"
-
 theatre = Movienga::Theatre.new(filename) do
-  hall :red, titile: 'Red hall', places: 100
+  hall :red, title: 'Red hall', places: 100
   hall :blue, title: 'Blue hall', places: 50
   hall :green, title: 'Green hall (VIP)', places: 12
 
-  period '09:00'..'11:00' do
+  period '09:00'..'10:00' do
     description 'Morning movies'
     filters genre: 'Comedy', year: 1900..1980
     price 10
     hall :red, :blue
+  end
+
+  period '09:00'..'10:00' do
+    description 'Modern comedies'
+    filters genre: 'Comedy', year: 1980..Time.now.year
+    price 10
+    hall :green
   end
 
   period '11:00'..'16:00' do
@@ -48,3 +50,10 @@ theatre = Movienga::Theatre.new(filename) do
     hall :green
   end
 end
+
+# theatre = Movienga::Theatre.new(filename)
+# theatre.show('19:45', :red)
+theatre.show('19:45')
+
+# when_to_show = theatre.when?('Life Is Beautiful')
+# puts "'Life Is Beautiful' showing on #{when_to_show}"
