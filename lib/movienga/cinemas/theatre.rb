@@ -28,8 +28,8 @@ module Movienga
       instance_eval(&block) if block_given?
     end
 
-    def show(time = Time.now.strftime('%H:%M'), hall_name = nil)
-      movies = filter_by_time(time, hall_name)
+    def show(time = Time.now.strftime('%H:%M'), hall: nil)
+      movies = filter_by_time(time, hall)
       raise NothingToShow, time unless movies.any?
       movie = peek_random(movies)
       puts show_movie(movie)
@@ -47,8 +47,7 @@ module Movienga
     end
 
     def get_hall(name)
-      hall = halls[name]
-      hall.nil? ? raise("No such hall name #{name}") : hall
+      halls.fetch(name) { raise "No such hall #{name}" }
     end
 
     private
@@ -77,9 +76,14 @@ module Movienga
 
     def period_from_time(time, hall_name)
       by_time = periods.select { |range, _| range.include?(time) }.map(&:last)
+      by_halls = by_time.flat_map(&:halls)
+
       return [] if by_time.empty?
-      raise "Please enter hall name" if by_time.count > 1 && hall_name.nil?
+      if by_time.count > 1 && hall_name.nil?
+        raise "Please enter hall name (#{by_halls.join(', ')})"
+      end
       return by_time if by_time.count == 1
+
       by_time.select { |period| period.halls.include?(hall_name) }
     end
 
@@ -115,8 +119,9 @@ module Movienga
     private
 
     def period_available?(time_range)
-      self.periods.select { |period|
-        TimePeriod.new(period).intersects?(time_range)
+      # !periods.any? { |p| TimePeriod.new(p).intersects?(time_range) }
+      periods.select { |p|
+        TimePeriod.new(p).intersects?(time_range)
       }.empty?
     end
   end
@@ -154,7 +159,6 @@ module Movienga
     end
 
     def filters(args)
-      # @filter = ->(movie) { movie.matches_all?(args) }
       @filter = args
     end
 

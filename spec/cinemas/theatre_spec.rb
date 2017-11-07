@@ -93,7 +93,7 @@ describe Movienga::Theatre do
 
     it do
       expect { theatre_bad_hall_block }
-        .to raise_error(RuntimeError, /No such hall name/)
+        .to raise_error(RuntimeError, /No such hall/)
     end
   end
 
@@ -148,7 +148,7 @@ describe Movienga::Theatre do
       end
 
       it do
-        expect { theatre_block.show('10:00', :green) }
+        expect { theatre_block.show('10:00', hall: :green) }
           .to output(/Now showing/).to_stdout
       end
     end

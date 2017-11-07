@@ -34,19 +34,20 @@ module Movienga
     attr_reader :collection
 
     def method_missing(method, **args)
-      movies = collection.filter(country: /#{method}/i)
-      if movies.any? && args.any?
+      if args.any?
         raise ArgumentError.new(
           "Method `#{method}` doesn't receive any arguments."
         )
       end
+
+      movies = collection.filter(country: /#{method}/i)
 
       return movies if movies.any?
       super
     end
 
     def respond_to_missing?(method, include_private = false)
-      collection.countries.select { |c| c =~ /#{method}/i }
+      collection.countries.select { |country| country =~ /#{method}/i }
     end
   end
 
@@ -105,7 +106,7 @@ module Movienga
     end
 
     def countries
-      @countries ||= all.map(&:country).flatten.uniq
+      @countries ||= all.flat_map(&:country).uniq
     end
 
     private

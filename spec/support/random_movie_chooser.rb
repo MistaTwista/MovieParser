@@ -8,7 +8,7 @@ RSpec.shared_examples 'choose movie by time' do |requested_time, filter|
         .to receive(:filter).with(filter).and_return [current_movie]
 
       Timecop.freeze(time) do
-        expect { theatre_block.show(ftime, :green) }
+        expect { theatre_block.show(ftime, hall: :green) }
           .to output(/#{ftime}/).to_stdout
       end
     end
