@@ -4,20 +4,34 @@ require_relative '../cashbox'
 require_relative '../errors'
 
 module Movienga
-  class HelperCinema
-    attr_reader :collection
+  class ByGenre
 
     def initialize(collection)
       @collection = collection
       create_methods(collection.genres)
     end
 
+    private
+
+    attr_reader :collection
+
     def create_methods(genres)
       genres.each do |genre|
-        mtd = ->() { collection.filter(genre: genre) }
-        self.define_singleton_method(genre.downcase.to_sym, mtd)
+        self.define_singleton_method(genre.downcase.to_sym) do
+          collection.filter(genre: genre)
+        end
       end
     end
+  end
+
+  class ByCountry
+    def initialize(collection)
+      @collection = collection
+    end
+
+    private
+
+    attr_reader :collection
 
     def method_missing(method, **args)
       movies = collection.filter(country: /#{method}/i)
@@ -40,11 +54,11 @@ module Movienga
     extend Cashbox
 
     def by_genre
-      HelperCinema.new(self)
+      ByGenre.new(self)
     end
 
     def by_country
-      HelperCinema.new(self)
+      ByCountry.new(self)
     end
 
     PRICE_LIST = {

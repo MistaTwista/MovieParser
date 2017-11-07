@@ -170,8 +170,7 @@ module Movienga
 
     private
 
-    def cinema
-      @cinema
-    end
+    attr_reader :cinema
+
   end
 end
