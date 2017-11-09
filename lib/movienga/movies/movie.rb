@@ -25,8 +25,8 @@ module Movienga
 
     def initialize(movie, collection = nil)
       @to_h = movie
-      self.attributes = movie
       @collection = collection
+      super(movie)
     end
 
     def has_genre?(genre)

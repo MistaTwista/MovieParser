@@ -151,6 +151,11 @@ describe Movienga::Theatre do
         expect { theatre_block.show('10:00', hall: :green) }
           .to output(/Now showing/).to_stdout
       end
+
+      it do
+        expect { theatre_block.show('10:00', hall: :black) }
+          .to raise_error(RuntimeError, /No such hall/)
+      end
     end
   end
 

@@ -69,22 +69,23 @@ module Movienga
     end
 
     def filter_by_time(time, hall_name)
-      periods = period_from_time(time, hall_name)
-      raise "No movies at #{time}" if periods.empty?
-      filter(periods.first.filter)
+      period = period_from_time(time, hall_name)
+      raise "No movies at #{time}" if period.nil?
+      filter(period.filter)
     end
 
     def period_from_time(time, hall_name)
+      halls.fetch(hall_name) { raise "No such hall" } unless hall_name.nil?
       by_time = periods.select { |range, _| range.include?(time) }.map(&:last)
       by_halls = by_time.flat_map(&:halls)
 
-      return [] if by_time.empty?
+      return nil if by_time.empty?
       if by_time.count > 1 && hall_name.nil?
         raise "Please enter hall name (#{by_halls.join(', ')})"
       end
-      return by_time if by_time.count == 1
+      return by_time.first if by_time.count == 1
 
-      by_time.select { |period| period.halls.include?(hall_name) }
+      by_time.select { |period| period.halls.include?(hall_name) }.first
     end
 
     def when_to_show_movie(movie)
@@ -119,10 +120,7 @@ module Movienga
     private
 
     def period_available?(time_range)
-      # !periods.any? { |p| TimePeriod.new(p).intersects?(time_range) }
-      periods.select { |p|
-        TimePeriod.new(p).intersects?(time_range)
-      }.empty?
+      !periods.any? { |range, _| TimePeriod.new(range).intersects?(time_range) }
     end
   end
 
