@@ -47,7 +47,7 @@ module Movienga
     end
 
     def respond_to_missing?(method, include_private = false)
-      collection.countries.select { |country| country =~ /#{method}/i }
+      collection.countries.any? { |country| country =~ /#{method}/i }
     end
   end
 

@@ -162,9 +162,8 @@ describe Movienga::Netflix do
           .to all have_attributes(country: 'USA')
       end
 
-      it do
-        expect(netflix.by_country.respond_to?(:usa)).to be_truthy
-      end
+      it { expect(netflix.by_country.respond_to?(:usa)).to be_truthy }
+      it { expect(netflix.by_country.respond_to?(:gromadunda)).to be_falsy }
 
       it do
         expect { netflix.by_country.usa(some: :argument) }

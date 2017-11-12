@@ -13,6 +13,13 @@ class StringArray < Virtus::Attribute
   end
 end
 
+class MovieDate < Virtus::Attribute
+  def coerce(value)
+    return nil unless /^\d{4}-\d{2}-\d{2}/.match?(value)
+    Date.strptime(value)
+  end
+end
+
 module Movienga
   class Movie
     attr_reader :to_h
@@ -22,6 +29,7 @@ module Movienga
     attribute :rate, Float
     attribute :genre, StringArray
     attribute :actors, StringArray
+    attribute :date, MovieDate
 
     def initialize(movie, collection = nil)
       @to_h = movie
@@ -42,11 +50,6 @@ module Movienga
 
     def year
       Date.strptime(to_h[:year], '%Y').year
-    end
-
-    def date
-      return nil unless /^\d{4}-\d{2}-\d{2}/.match?(to_h[:date])
-      Date.strptime(to_h[:date])
     end
 
     def period
