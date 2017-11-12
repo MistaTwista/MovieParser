@@ -38,13 +38,16 @@ module Movienga
     end
 
     def has_genre?(genre)
-      @collection_genres ||= all.map(&:genre).flatten.uniq
-      @collection_genres.include?(genre)
+      genres.include?(genre)
     end
 
     def each(&block)
       return movies.each unless block_given?
       movies.each(&block)
+    end
+
+    def genres
+      @genres ||= all.map(&:genre).flatten.uniq
     end
 
     private

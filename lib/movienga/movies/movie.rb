@@ -1,12 +1,40 @@
 require 'date'
+require 'virtus'
+
+class MovieLength < Virtus::Attribute
+  def coerce(value)
+    value.to_i
+  end
+end
+
+class StringArray < Virtus::Attribute
+  def coerce(value)
+    value.split(',')
+  end
+end
+
+class MovieDate < Virtus::Attribute
+  def coerce(value)
+    return nil unless /^\d{4}-\d{2}-\d{2}/.match?(value)
+    Date.strptime(value)
+  end
+end
 
 module Movienga
   class Movie
     attr_reader :to_h
+    include Virtus.model
+
+    attribute :length, MovieLength
+    attribute :rate, Float
+    attribute :genre, StringArray
+    attribute :actors, StringArray
+    attribute :date, MovieDate
 
     def initialize(movie, collection = nil)
       @to_h = movie
       @collection = collection
+      super(movie)
     end
 
     def has_genre?(genre)
@@ -22,27 +50,6 @@ module Movienga
 
     def year
       Date.strptime(to_h[:year], '%Y').year
-    end
-
-    def length
-      to_h[:length].to_i
-    end
-
-    def rate
-      to_h[:rate].to_f
-    end
-
-    def genre
-      to_h[:genre].split(',')
-    end
-
-    def actors
-      to_h[:actors].split(',')
-    end
-
-    def date
-      return nil unless /^\d{4}-\d{2}-\d{2}/.match?(to_h[:date])
-      Date.strptime(to_h[:date])
     end
 
     def period
@@ -99,12 +106,11 @@ module Movienga
     end
 
     def collection_has_genre?(genre)
-      return true if @collection.nil?
+      return false if @collection.nil?
       @collection.has_genre?(genre)
     end
 
     def method_missing(name, *args)
-      name = name.to_sym
       return to_h[name] if to_h.key?(name)
       super
     end

@@ -9,26 +9,51 @@ require_relative 'lib/movienga/cinemas/theatre'
 
 netflix = Movienga::Netflix.new(filename)
 netflix.pay(100)
-netflix.define_filter(:early) { |m| m.year > 2014 }
-netflix.define_filter(:actions) { |m| m.genre.include?('Action') }
-netflix.define_filter(:gt_year) { |m, year| m.year > year }
-netflix.define_filter(:style) { |m, genre| m.genre.include?(genre) }
-netflix.define_filter(:comedies, from: :style, arg: 'Comedy')
-netflix.show(early: true)
-netflix.show(gt_year: 2014)
-netflix.show(comedies: true)
-netflix.show do |movie|
-  !movie.title.include?('Terminator') &&
-    movie.genre.include?('Action') &&
-    movie.year > 2003
+
+theatre = Movienga::Theatre.new(filename) do
+  hall :red, title: 'Red hall', places: 100
+  hall :blue, title: 'Blue hall', places: 50
+  hall :green, title: 'Green hall (VIP)', places: 12
+
+  period '09:00'..'10:00' do
+    description 'Morning movies'
+    filters genre: 'Comedy', year: 1900..1980
+    price 10
+    hall :red, :blue
+  end
+
+  period '09:00'..'10:00' do
+    description 'Modern comedies'
+    filters genre: 'Comedy', year: 1980..Time.now.year
+    price 10
+    hall :green
+  end
+
+  period '11:00'..'16:00' do
+    description 'Specials'
+    filters title: 'The Terminator'
+    price 50
+    hall :green
+  end
+
+  period '16:00'..'20:00' do
+    description 'Evening movies'
+    filters genre: ['Action', 'Drama'], year: 2007..Time.now.year
+    price 20
+    hall :red, :blue
+  end
+
+  period '19:00'..'22:00' do
+    description 'Night zone'
+    filters year: 1900..1945, exclude_country: 'USA'
+    price 30
+    hall :green
+  end
 end
 
-# puts "You have #{netflix.account}"
-# netflix.show(genre: 'Comedy', period: :new)
-# puts "You have #{netflix.account}"
-# puts "Terminator cost #{netflix.how_much?(/The Terminator/)}"
-#
 # theatre = Movienga::Theatre.new(filename)
-# theatre.show('13:45')
+# theatre.show('19:45', :red)
+theatre.show('19:45')
+
 # when_to_show = theatre.when?('Life Is Beautiful')
 # puts "'Life Is Beautiful' showing on #{when_to_show}"

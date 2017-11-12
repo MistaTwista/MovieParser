@@ -4,11 +4,12 @@ RSpec.shared_examples 'choose movie by time' do |requested_time, filter|
     let(:ftime) { time.strftime("%H:%M") }
 
     it 'selecting good movie' do
-      expect(theatre)
+      expect(theatre_block)
         .to receive(:filter).with(filter).and_return [current_movie]
 
       Timecop.freeze(time) do
-        expect { theatre.show(ftime) }.to output(/#{ftime}/).to_stdout
+        expect { theatre_block.show(ftime, hall: :green) }
+          .to output(/#{ftime}/).to_stdout
       end
     end
   end

@@ -4,8 +4,63 @@ require_relative '../cashbox'
 require_relative '../errors'
 
 module Movienga
+  class ByGenre
+
+    def initialize(collection)
+      @collection = collection
+      create_methods(collection.genres)
+    end
+
+    private
+
+    attr_reader :collection
+
+    def create_methods(genres)
+      genres.each do |genre|
+        self.define_singleton_method(genre.downcase.to_sym) do
+          collection.filter(genre: genre)
+        end
+      end
+    end
+  end
+
+  class ByCountry
+    def initialize(collection)
+      @collection = collection
+    end
+
+    private
+
+    attr_reader :collection
+
+    def method_missing(method, **args)
+      if args.any?
+        raise ArgumentError.new(
+          "Method `#{method}` doesn't receive any arguments."
+        )
+      end
+
+      movies = collection.filter(country: /#{method}/i)
+
+      return movies if movies.any?
+      super
+    end
+
+    def respond_to_missing?(method, include_private = false)
+      collection.countries.any? { |country| country =~ /#{method}/i }
+    end
+  end
+
   class Netflix < Cinema
     extend Cashbox
+
+    def by_genre
+      ByGenre.new(self)
+    end
+
+    def by_country
+      ByCountry.new(self)
+    end
 
     PRICE_LIST = {
       new: 5,
@@ -48,6 +103,10 @@ module Movienga
     def define_filter(filter_name, from: nil, arg: nil, &filter_proc)
       reusable_filter = curry_filter(defined_filters[from], arg) if from && arg
       defined_filters[filter_name] = reusable_filter || filter_proc
+    end
+
+    def countries
+      @countries ||= all.flat_map(&:country).uniq
     end
 
     private

@@ -147,4 +147,28 @@ describe Movienga::Netflix do
         .to eq({ 'The Terminator' => 3 })
     end
   end
+
+  describe 'metaprogramming' do
+    context '#by_genre' do
+      it do
+        expect(netflix.by_genre.comedy)
+          .to all have_attributes(genre: array_including('Comedy'))
+      end
+    end
+
+    context '#by_country' do
+      it do
+        expect(netflix.by_country.usa)
+          .to all have_attributes(country: 'USA')
+      end
+
+      it { expect(netflix.by_country.respond_to?(:usa)).to be_truthy }
+      it { expect(netflix.by_country.respond_to?(:gromadunda)).to be_falsy }
+
+      it do
+        expect { netflix.by_country.usa(some: :argument) }
+          .to raise_error(ArgumentError, /doesn't receive any arguments/)
+      end
+    end
+  end
 end
