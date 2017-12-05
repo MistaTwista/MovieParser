@@ -75,7 +75,7 @@ module Movienga
     end
 
     def period_from_time(time, hall_name)
-      halls.fetch(hall_name) { raise "No such hall" } unless hall_name.nil?
+      halls.fetch(hall_name) { raise 'No such hall' } unless hall_name.nil?
       by_time = periods.select { |range, _| range.include?(time) }.map(&:last)
       by_halls = by_time.flat_map(&:halls)
 
@@ -107,7 +107,7 @@ module Movienga
     def add_period(period)
       time_range = period.time_range
       unless period_available?(time_range)
-        raise "#{time_range} is not available in #{self.title}"
+        raise "#{time_range} is not available in #{title}"
       end
 
       periods[time_range] = period
@@ -120,7 +120,7 @@ module Movienga
     private
 
     def period_available?(time_range)
-      !periods.any? { |range, _| TimePeriod.new(range).intersects?(time_range) }
+      periods.none? { |range, _| TimePeriod.new(range).intersects?(time_range) }
     end
   end
 
@@ -130,11 +130,11 @@ module Movienga
     def initialize(time_range)
       period_min = DateTime.parse(time_range.min)
       period_max = DateTime.parse(time_range.max)
-      if time_range.exclude_end?
-        @period = period_min...period_max
-      else
-        @period = period_min..period_max
-      end
+      @period = if time_range.exclude_end?
+                  period_min...period_max
+                else
+                  period_min..period_max
+                end
     end
 
     def intersects?(time_range)
@@ -173,6 +173,5 @@ module Movienga
     private
 
     attr_reader :cinema
-
   end
 end

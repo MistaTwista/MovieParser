@@ -5,7 +5,6 @@ require_relative '../errors'
 
 module Movienga
   class ByGenre
-
     def initialize(collection)
       @collection = collection
       create_methods(collection.genres)
@@ -17,7 +16,7 @@ module Movienga
 
     def create_methods(genres)
       genres.each do |genre|
-        self.define_singleton_method(genre.downcase.to_sym) do
+        define_singleton_method(genre.downcase.to_sym) do
           collection.filter(genre: genre)
         end
       end
@@ -35,9 +34,7 @@ module Movienga
 
     def method_missing(method, **args)
       if args.any?
-        raise ArgumentError.new(
-          "Method `#{method}` doesn't receive any arguments."
-        )
+        raise ArgumentError, "Method `#{method}` doesn't receive any arguments."
       end
 
       movies = collection.filter(country: /#{method}/i)
@@ -46,7 +43,7 @@ module Movienga
       super
     end
 
-    def respond_to_missing?(method, include_private = false)
+    def respond_to_missing?(method, _include_private = false)
       collection.countries.any? { |country| country =~ /#{method}/i }
     end
   end
