@@ -1,59 +1,55 @@
-def puts_title(text)
-  puts "\n\"#{text.upcase}\""
-end
-
-filename = ARGV[0] || 'movies.txt'
-abort("#{filename} not found or can't be read") unless File.readable?(filename)
 require_relative 'lib/movienga/cinemas/netflix'
-require_relative 'lib/movienga/cinemas/theatre'
 
-netflix = Movienga::Netflix.new(filename)
-netflix.pay(100)
-
-theatre = Movienga::Theatre.new(filename) do
-  hall :red, title: 'Red hall', places: 100
-  hall :blue, title: 'Blue hall', places: 50
-  hall :green, title: 'Green hall (VIP)', places: 12
-
-  period '09:00'..'10:00' do
-    description 'Morning movies'
-    filters genre: 'Comedy', year: 1900..1980
-    price 10
-    hall :red, :blue
+class MovieDecorator < SimpleDelegator
+  def initialize(movie)
+    @movie = movie
+    super
   end
 
-  period '09:00'..'10:00' do
-    description 'Modern comedies'
-    filters genre: 'Comedy', year: 1980..Time.now.year
-    price 10
-    hall :green
-  end
-
-  period '11:00'..'16:00' do
-    description 'Specials'
-    filters title: 'The Terminator'
-    price 50
-    hall :green
-  end
-
-  period '16:00'..'20:00' do
-    description 'Evening movies'
-    filters genre: ['Action', 'Drama'], year: 2007..Time.now.year
-    price 20
-    hall :red, :blue
-  end
-
-  period '19:00'..'22:00' do
-    description 'Night zone'
-    filters year: 1900..1945, exclude_country: 'USA'
-    price 30
-    hall :green
+  def link
+    self.url.split('/')[4]
   end
 end
 
-# theatre = Movienga::Theatre.new(filename)
-# theatre.show('19:45', :red)
-theatre.show('19:45')
+class WebApp
+  def options
+    {
+      title: 'Netflix TOP 250',
+      decorator: MovieDecorator
+    }
+  end
 
-# when_to_show = theatre.when?('Life Is Beautiful')
-# puts "'Life Is Beautiful' showing on #{when_to_show}"
+  def call(env)
+    req = Rack::Request.new(env)
+    case req.path
+    when '/'
+      [200, {'Content-Type' => "text/html"}, [template('netflix').render(data_source, options)]]
+    when /\A\/tt\d*\z/
+      filter = ->(movie) { movie.url.include?(req.path) }
+      view = template('movie').render(Object.new, { movie: data_source.filter(&filter).first })
+      [200, {'Content-Type' => "text/html"}, [view]]
+    else
+      [404, {'Content-Type' => "text/html"}, ['Not found']]
+    end
+  end
+
+  def data_source(filename = './spec/data/movies.txt')
+    unless File.readable?(filename)
+      raise "#{filename} not found or can't be read"
+    end
+
+    @data_source ||= Movienga::Netflix.new(filename)
+  end
+
+  def template(name)
+    file = File.join(WebApp.root, 'app', 'views', "#{name}.haml")
+    Haml::Engine.new(File.read(file))
+  end
+
+  def self.root
+    File.dirname(__FILE__)
+  end
+end
+
+# require 'yaml'
+# ROUTES = YAML.load(File.read(File.join(File.dirname(__FILE__), "app", "routes.yml"))) # 1
