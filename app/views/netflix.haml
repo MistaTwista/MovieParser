@@ -21,11 +21,10 @@
                 %th{ scope: "col" }= title
           %tbody
             - movies.each.with_index do |movie, i|
-              - movie = decorator.new(movie)
               %tr
                 %td{ scope: "row" }= i+1
                 %td
-                  %a{ href: "#{movie.link}" }= movie.title
+                  %a{ href: "#{movie.imdb_id}" }= movie.title
                 %td= movie.year
                 %td= movie.country
                 %td= movie.genre.join(', ')

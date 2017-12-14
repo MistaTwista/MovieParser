@@ -94,6 +94,10 @@ module Movienga
       "#<#{self.class.name} #{title} #{genre} #{date}>"
     end
 
+    def imdb_id
+      self.url.split('/')[4]
+    end
+
     private
 
     def self.period

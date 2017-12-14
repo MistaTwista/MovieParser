@@ -1,21 +1,9 @@
 require_relative 'lib/movienga/cinemas/netflix'
 
-class MovieDecorator < SimpleDelegator
-  def initialize(movie)
-    @movie = movie
-    super
-  end
-
-  def link
-    self.url.split('/')[4]
-  end
-end
-
 class WebApp
   def options
     {
-      title: 'Netflix TOP 250',
-      decorator: MovieDecorator
+      title: 'Netflix TOP 250'
     }
   end
 
@@ -50,6 +38,3 @@ class WebApp
     File.dirname(__FILE__)
   end
 end
-
-# require 'yaml'
-# ROUTES = YAML.load(File.read(File.join(File.dirname(__FILE__), "app", "routes.yml"))) # 1
