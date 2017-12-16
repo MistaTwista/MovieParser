@@ -8,13 +8,22 @@ module Movienga
       @base_folder = base_folder
     end
 
-    def persist_data(id:, data:, group:, file: nil)
+    def persist_data(id:, group:, data:)
       path = base_path_to(id: id, group: group)
       raise "Cannot put data to #{path}" unless good_path?(path)
       filename = "#{path}/data.yml"
+
       File.new(filename, "w+") unless File.exists?(filename)
       File.open(filename, "r+") { |f| f.write(data.to_yaml) }
-      download_file(file, path) if file
+    end
+
+    def persist_file(id:, group:, file:)
+      path = base_path_to(id: id, group: group)
+      raise "Cannot put data to #{path}" unless good_path?(path)
+      filename = "#{path}/poster.jpg"
+
+      raise "#{filename} already exists" if File.exists?(filename)
+      download_file(file, path)
     end
 
     def get_data(id:, group: 'ru')

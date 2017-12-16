@@ -6,6 +6,7 @@ gem 'dotenv'
 gem 'guard-rspec', require: false
 gem 'haml'
 gem 'money'
+gem 'nokogiri'
 gem 'rack'
 gem 'rspec'
 gem 'rspec-its'

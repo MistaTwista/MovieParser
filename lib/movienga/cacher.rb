@@ -3,6 +3,7 @@ Dotenv.load
 
 require 'ruby-progressbar'
 require_relative './tmdb_parser'
+require_relative './imdb_parser'
 require_relative './movie_collection'
 
 module Movienga
@@ -23,12 +24,14 @@ module Movienga
   end
 end
 
-parser = Movienga::TMDBParser.new(api_key: ENV['API_KEY'])
-collection = Movienga::MovieCollection.new(ENV['DATA_PATH'])
+tmdb_parser = Movienga::TMDBParser.new(api_key: ENV['API_KEY'])
+imdb_parser = Movienga::IMDBParser.new
 
+collection = Movienga::MovieCollection.new(ENV['DATA_PATH'])
 cacher = Movienga::Cacher.new(collection)
 
-cacher.run(title: 'Caching Ru') { |item| parser.parse(item.imdb_id) }
+cacher.run(title: 'Caching TMDB Ru') { |item| tmdb_parser.parse(item.imdb_id) }
+# cacher.run(title: 'Caching IMDB budgets') { |item| imdb_parser.parse(item.imdb_id) }
 
-parser.set_language('en')
-cacher.run(title: 'Caching En') { |item| parser.parse(item.imdb_id) }
+tmdb_parser.language = 'en'
+cacher.run(title: 'Caching TMDB En') { |item| tmdb_parser.parse(item.imdb_id) }
