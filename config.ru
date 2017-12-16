@@ -3,4 +3,8 @@ require 'bundler'
 Bundler.require
 
 require './app'
-run WebApp.new
+
+run Rack::URLMap.new( {
+  "/cache" => Rack::Directory.new( "cache" ),
+  "/" => WebApp.new
+} )

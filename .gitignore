@@ -1,3 +1,4 @@
 tmp/
 .hide.*
 .env*
+cache/*

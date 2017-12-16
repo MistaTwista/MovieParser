@@ -128,6 +128,7 @@ DEPENDENCIES
   rspec
   rspec-its
   rubocop
+  ruby-progressbar
   themoviedb-api
   timecop
   virtus

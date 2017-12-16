@@ -14,7 +14,11 @@ module Movienga
     end
 
     def run(title: 'Caching', &block)
-      @collection.each.with_progressbar(title: title, &block)
+      @collection.each.with_progressbar(
+        title: title,
+        format: "%t: Processed %c/%C |%b>%i| %p%% %e %a",
+        &block
+      )
     end
   end
 end

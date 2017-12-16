@@ -1,5 +1,6 @@
 require 'date'
 require 'virtus'
+require_relative '../cache'
 
 class MovieLength < Virtus::Attribute
   def coerce(value)
@@ -98,7 +99,19 @@ module Movienga
       self.url.split('/')[4]
     end
 
+    def poster(language = 'en')
+      cache.get_file_path(id: imdb_id, group: language)
+    end
+
+    def additionals(language = 'en')
+      cache.get_data(id: imdb_id, group: language)
+    end
+
     private
+
+    def cache
+      @cache ||= Cache.new
+    end
 
     def self.period
       period = name.scan(/(\w+)Movie/).flatten.first
