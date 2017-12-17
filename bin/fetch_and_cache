@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+require 'dotenv'
+Dotenv.load
+
+require_relative '../lib/movienga/tmdb_parser'
+require_relative '../lib/movienga/imdb_parser'
+require_relative '../lib/movienga/movie_collection'
+require_relative '../lib/movienga/collection_enumerator'
+
+tmdb_parser = Movienga::TMDBParser.new(api_key: ENV['API_KEY'])
+imdb_parser = Movienga::IMDBParser.new
+
+collection = Movienga::MovieCollection.new(ENV['DATA_PATH'])
+enumerator = Movienga::CollectionEnumerator.new(collection)
+
+enumerator.run(title: 'Caching TMDB Ru') { |item| tmdb_parser.parse(item.imdb_id) }
+# enumerator.run(title: 'Caching IMDB budgets') { |item| imdb_parser.parse(item.imdb_id) }
+
+tmdb_parser.language = 'en'
+enumerator.run(title: 'Caching TMDB En') { |item| tmdb_parser.parse(item.imdb_id) }

@@ -3,7 +3,7 @@ require 'pry'
 
 # TODO: Make cache importable
 module Movienga
-  class Cache
+  class Cache # TODO: FileCacher, YMLCacher
     def initialize(base_folder: 'cache')
       @base_folder = base_folder
     end
