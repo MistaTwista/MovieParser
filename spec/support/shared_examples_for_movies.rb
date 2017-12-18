@@ -59,6 +59,34 @@ shared_examples 'a movie' do
     end
   end
 
+  describe '#imdb_id' do
+    its(:imdb_id) do
+      is_expected.to eq 'tt0111161'
+    end
+  end
+
+  describe '#poster' do
+    it do
+      cache = double()
+      movie.stub(:cache) { cache }
+      expect(cache)
+        .to receive(:get_file_path).with(id: 'tt0111161', group: 'en')
+
+      movie.poster
+    end
+  end
+
+  describe '#additionals' do
+    it do
+      cache = double()
+      movie.stub(:cache) { cache }
+      expect(cache)
+        .to receive(:get_data).with(id: 'tt0111161', group: 'en')
+
+      movie.additionals
+    end
+  end
+
   describe '#month' do
     its(:month) { is_expected.to eq 'October' }
   end
