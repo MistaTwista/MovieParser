@@ -1,7 +1,6 @@
 require 'open-uri'
 require 'pry'
 
-# TODO: Make cache importable
 module Movienga
   class Cache # TODO: FileCacher, YMLCacher
     def initialize(base_folder: 'cache')
@@ -17,13 +16,13 @@ module Movienga
       File.open(filename, "r+") { |f| f.write(data.to_yaml) }
     end
 
-    def persist_file(id:, group:, file:)
+    def persist_file(id:, group:, file_url:)
       path = base_path_to(id: id, group: group)
       raise "Cannot put data to #{path}" unless good_path?(path)
       filename = "#{path}/poster.jpg"
 
       raise "#{filename} already exists" if File.exists?(filename)
-      download_file(file, path)
+      download_file(file_url, path)
     end
 
     def get_data(id:, group: 'ru')

@@ -1,6 +1,7 @@
 require 'themoviedb-api'
 require_relative './cache'
 
+# TODO: TEST
 module Movienga
   class TMDBParser
     def initialize(api_key:, language: 'ru', cache: Cache.new)
@@ -14,7 +15,7 @@ module Movienga
       cache.persist_data(id: imdb_id, group: language, data: movie)
 
       url = path_to_image(movie.poster_path) if movie.poster_path
-      cache.persist_file(id: imdb_id, group: language, file: url) if url
+      cache.persist_file(id: imdb_id, group: language, file_url: url) if url
     end
 
     def language=(language)

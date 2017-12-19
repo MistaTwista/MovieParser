@@ -2,6 +2,8 @@ require 'open-uri'
 require 'nokogiri'
 require_relative './cache'
 
+# TODO: TEST
+# TODO: Functional
 module Movienga
   class IMDBParser
     def initialize(cache: Cache.new)
