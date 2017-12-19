@@ -16,8 +16,8 @@ describe Movienga::Cache do
     context 'bad path' do
       it do
         data = { take: 'this', data: 'and', put: 'to cache' }
-        expect(cache).to receive(:good_path?)
-          .with('cache/tt1000/rus').and_return(false)
+        expect(cache).to receive(:good_path_for?)
+          .with('cache/tt1000/rus/data.yml').and_return(false)
         expect { cache.persist_data(id: 'tt1000', group: 'rus', data: data) }
           .to raise_error RuntimeError
       end
@@ -28,15 +28,15 @@ describe Movienga::Cache do
     context 'good path' do
       it do
         expect(cache).to receive(:download_file)
-          .with('/some.png', 'cache/tt1000/rus')
+          .with('/some.png', 'cache/tt1000/rus/poster.jpg')
         cache.persist_file(id: 'tt1000', group: 'rus', file_url: '/some.png')
       end
     end
 
     context 'bad path' do
       it do
-        expect(cache).to receive(:good_path?)
-          .with('cache/tt1000/rus').and_return(false)
+        expect(cache).to receive(:good_path_for?)
+          .with('cache/tt1000/rus/poster.jpg').and_return(false)
         expect {
           cache.persist_file(id: 'tt1000', group: 'rus', file_url: '/some.jpg')
         }.to raise_error RuntimeError

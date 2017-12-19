@@ -23,6 +23,7 @@
               %h4.card-title= "#{movie.additionals(language).title}"
               %p.card-text= movie.additionals(language).overview
             %ul.list-group.list-group-flush
+              %li.list-group-item= "Budget: #{movie.budget}"
               %li.list-group-item= "Country: #{movie.country}"
               %li.list-group-item= "Director: #{movie.director}"
               %li.list-group-item= "Year: #{movie.year}"

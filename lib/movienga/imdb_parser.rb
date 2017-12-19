@@ -1,9 +1,8 @@
 require 'open-uri'
 require 'nokogiri'
+require 'yaml'
 require_relative './cache'
 
-# TODO: TEST
-# TODO: Functional
 module Movienga
   class IMDBParser
     def initialize(cache: Cache.new)
@@ -15,13 +14,15 @@ module Movienga
       budget_nodes = doc.css("div#titleDetails div.txt-block")
                   .select{|n| n.text.include?("Budget")}
       if budget_nodes.any?
-        budget = budget_nodes.first.text.strip.gsub(",","").match(/\$(\d*)/)
-        # cache.update_data(
-        #   id: imdb_id,
-        #   group: language
-        #   data: movie,
-        #   file: url,
-        # )
+        budget = budget_nodes.first.text.strip
+          .gsub(",","").match(/\A(Budget:)(.*)\n/)[2]
+
+        cache.persist_data(
+          id: imdb_id,
+          group: 'common',
+          file: 'imdb_data.yml',
+          data: { budget: budget }
+        )
       end
     end
 

@@ -14,7 +14,7 @@ collection = Movienga::MovieCollection.new(ENV['DATA_PATH'])
 enumerator = Movienga::CollectionEnumerator.new(collection)
 
 enumerator.run(title: 'Caching TMDB Ru') { |item| tmdb_parser.parse(item.imdb_id) }
-# enumerator.run(title: 'Caching IMDB budgets') { |item| imdb_parser.parse(item.imdb_id) }
+enumerator.run(title: 'Caching IMDB budgets') { |item| imdb_parser.parse(item.imdb_id) }
 
 tmdb_parser.language = 'en'
 enumerator.run(title: 'Caching TMDB En') { |item| tmdb_parser.parse(item.imdb_id) }

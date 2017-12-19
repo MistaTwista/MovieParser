@@ -34,7 +34,7 @@ describe Movienga::TMDBParser do
       expect(tmdb_parser).to receive(:path_to_image).and_return('/cache/file.jpg')
 
       expect(cache).to receive(:persist_file)
-        .with(id: 'tt0100500', group: 'ru', file: '/cache/file.jpg')
+        .with(id: 'tt0100500', group: 'ru', file_url: '/cache/file.jpg')
 
       tmdb_parser.parse('tt0100500')
     end

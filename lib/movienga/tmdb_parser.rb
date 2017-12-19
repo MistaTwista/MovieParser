@@ -1,7 +1,6 @@
 require 'themoviedb-api'
 require_relative './cache'
 
-# TODO: TEST
 module Movienga
   class TMDBParser
     attr_reader :language
