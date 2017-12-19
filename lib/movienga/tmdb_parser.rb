@@ -4,6 +4,8 @@ require_relative './cache'
 # TODO: TEST
 module Movienga
   class TMDBParser
+    attr_reader :language
+
     def initialize(api_key:, language: 'ru', cache: Cache.new)
       @cache = cache
       self.language = language
@@ -20,26 +22,30 @@ module Movienga
 
     def language=(language)
       @language = language
-      Tmdb::Api.language(language)
+      change_api_language
     end
 
     private
 
-    attr_reader :language, :cache
+    attr_reader :cache
 
     def init_api(key:, api: Tmdb::Api)
       api.key(key)
+    end
+
+    def path_to_image(path, size = 'w300')
+      "#{api_config.images.base_url}#{size}#{path}"
     end
 
     def get_movie_info(imdb_id)
       Tmdb::Find.movie(imdb_id, external_source: 'imdb_id')
     end
 
-    def path_to_image(path, size = 'w300')
-      "#{config.images.base_url}#{size}#{path}"
+    def change_api_language
+      Tmdb::Api.language(language)
     end
 
-    def config
+    def api_config
       Tmdb::Configuration.get
     end
   end
