@@ -65,25 +65,29 @@ shared_examples 'a movie' do
     end
   end
 
-  describe '#poster' do
-    it do
-      cache = double()
-      movie.stub(:cache) { cache }
-      expect(cache)
-        .to receive(:get_file_path).with(id: 'tt0111161', group: 'en')
-
-      movie.poster
+  describe 'Cached data' do
+    let(:cache) { double() }
+    
+    before :each do
+      expect(movie).to receive(:cache).and_return(cache)
     end
-  end
 
-  describe '#additionals' do
-    it do
-      cache = double()
-      movie.stub(:cache) { cache }
-      expect(cache)
-        .to receive(:get_data).with(id: 'tt0111161', group: 'en')
-
-      movie.additionals
+    describe '#poster' do
+      it do
+        expect(cache)
+          .to receive(:get_file_path).with(id: 'tt0111161', group: 'en')
+  
+        movie.poster
+      end
+    end
+  
+    describe '#additionals' do
+      it do
+        expect(cache)
+          .to receive(:get_data).with(id: 'tt0111161', group: 'en')
+  
+        movie.additionals
+      end
     end
   end
 
