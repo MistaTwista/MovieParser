@@ -24,7 +24,7 @@ module Movienga
     end
 
     def clear
-      system 'rm', '-rf', base_folder
+      FileUtils.rm_r base_folder if File.directory?(base_folder)
     end
 
     private
