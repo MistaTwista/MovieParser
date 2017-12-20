@@ -1,4 +1,5 @@
 require 'open-uri'
+require 'fileutils'
 
 module Movienga
   class Cache
@@ -10,8 +11,7 @@ module Movienga
 
     def persist(id, **data)
       file_path = base_path_to(id)
-      raise "Cannot put data to #{file_path}" unless good_path_for?(file_path)
-
+      create_storage(file_path) unless folder_ready?(file_path)
       File.new(file_path, 'w+') unless File.exist?(file_path)
       File.open(file_path, 'r+') { |f| f.write(data.to_yaml) }
     end
@@ -35,16 +35,23 @@ module Movienga
       "#{base_folder}/#{id}/#{group}/#{file}"
     end
 
-    def good_path_for?(file_path)
-      folder = file_path.split('/').slice(0...-1).join('/')
-      system 'mkdir', '-p', folder
+    def extract_folder_path(file_path)
+      file_path.split('/').slice(0...-1).join('/')
+    end
+
+    def folder_ready?(file_path)
+      File.directory? extract_folder_path(file_path)
+    end
+
+    def create_storage(file_path)
+      FileUtils.mkdir_p extract_folder_path(file_path)
     end
   end
 
   class FileCache < Cache
     def persist(id, file_url:)
       file_path = base_path_to(id)
-      raise "Cannot put data to #{file_path}" unless good_path_for?(file_path)
+      create_storage(file_path) unless folder_ready?(file_path)
       raise "#{file_path} already exists" if File.exist?(file_path)
 
       download_file(file_url, file_path)
