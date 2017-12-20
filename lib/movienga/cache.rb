@@ -1,5 +1,4 @@
 require 'open-uri'
-require 'pry'
 
 module Movienga
   class Cache
@@ -9,7 +8,7 @@ module Movienga
       @file = file
     end
 
-    def persist(id:, data:)
+    def persist(id, **data)
       file_path = base_path_to(id)
       raise "Cannot put data to #{file_path}" unless good_path_for?(file_path)
 
@@ -24,8 +23,8 @@ module Movienga
       YAML.load_file(file_path)
     end
 
-    def clear(file_path)
-      system 'rm', file_path if File.exist?(file_path)
+    def clear
+      system 'rm', '-rf', base_folder
     end
 
     private
@@ -43,7 +42,7 @@ module Movienga
   end
 
   class FileCache < Cache
-    def persist(id:, file_url:)
+    def persist(id, file_url:)
       file_path = base_path_to(id)
       raise "Cannot put data to #{file_path}" unless good_path_for?(file_path)
       raise "#{file_path} already exists" if File.exist?(file_path)
