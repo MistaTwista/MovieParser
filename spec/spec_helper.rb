@@ -1,7 +1,9 @@
+require 'webmock/rspec'
 require 'rspec/its'
 require 'money'
 
 RSpec::Matchers.define_negated_matcher :not_change, :change
+WebMock.disable_net_connect!(allow_localhost: true)
 
 def money(amount)
   Money.new(amount, 'USD')

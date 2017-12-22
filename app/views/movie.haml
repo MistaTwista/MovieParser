@@ -1,0 +1,37 @@
+!!!
+%html{:lang => "en"}
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title Movienga
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "width=device-width, initial-scale=1, shrink-to-fit=no", :name => "viewport"}/
+    %link{:crossorigin => "anonymous", :href => "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css", :integrity => "sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb", :rel => "stylesheet"}/
+  %body
+    %div.container
+      %div.row
+        %ul.nav
+          %li.nav-item
+            %a.nav-link{ href: '/' } Back
+          %li.nav-item
+            %a.nav-link{ href: "#{switch_lang_path}" } Switch language
+      %div.row
+        %div.col-sm
+          %img.card-img-top{src: "/#{movie.poster(language)}"}
+        %div.col-sm
+          %div.card{ style: "width: 30rem;" }
+            %div.card-body
+              %h4.card-title= "#{movie.additionals(language).title}"
+              %p.card-text= movie.additionals(language).overview
+            %ul.list-group.list-group-flush
+              %li.list-group-item= "Budget: #{movie.budget}"
+              %li.list-group-item= "Country: #{movie.country}"
+              %li.list-group-item= "Director: #{movie.director}"
+              %li.list-group-item= "Year: #{movie.year}"
+              %li.list-group-item= "Rate: #{movie.rate}"
+              %li.list-group-item= "Actors: #{movie.actors.join(', ')}"
+              %li.list-group-item= "Genres: #{movie.genre.join(', ')}"
+        %div.col-sm
+
+    %script{:crossorigin => "anonymous", :integrity => "sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN", :src => "https://code.jquery.com/jquery-3.2.1.slim.min.js"}
+    %script{:crossorigin => "anonymous", :integrity => "sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh", :src => "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"}
+    %script{:crossorigin => "anonymous", :integrity => "sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ", :src => "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"}
