@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+require 'slop'
+
+require_relative '../lib/movienga/cinemas/netflix'
+require_relative '../lib/movienga/version'
+
+opts = Slop.parse do |o|
+  o.string '--pay', 'Put cash to account'
+  o.string '--show', 'Select movie with filter'
+  o.string '--data', 'Path to data file'
+  o.on '--version', 'print the version' do
+    puts Movienga::VERSION
+    exit
+  end
+end
+
+unless opts[:show] && opts[:data]
+  puts opts
+  exit
+end
+
+netflix = Movienga::Netflix.new(opts[:data])
+
+if opts[:pay]
+  netflix.pay opts[:pay]
+end
+
+param, query = opts[:show].split(':')
+netflix.show param.to_sym => query

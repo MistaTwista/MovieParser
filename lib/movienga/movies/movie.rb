@@ -2,26 +2,26 @@ require 'date'
 require 'virtus'
 require_relative '../cache'
 
-class MovieLength < Virtus::Attribute
-  def coerce(value)
-    value.to_i
-  end
-end
-
-class StringArray < Virtus::Attribute
-  def coerce(value)
-    value.split(',')
-  end
-end
-
-class MovieDate < Virtus::Attribute
-  def coerce(value)
-    return nil unless /^\d{4}-\d{2}-\d{2}/.match?(value)
-    Date.strptime(value)
-  end
-end
-
 module Movienga
+  class MovieLength < Virtus::Attribute
+    def coerce(value)
+      value.to_i
+    end
+  end
+
+  class StringArray < Virtus::Attribute
+    def coerce(value)
+      value.split(',')
+    end
+  end
+
+  class MovieDate < Virtus::Attribute
+    def coerce(value)
+      return nil unless /^\d{4}-\d{2}-\d{2}/.match?(value)
+      Date.strptime(value)
+    end
+  end
+
   class Movie
     attr_reader :to_h
     include Virtus.model

@@ -1,4 +1,11 @@
-tmp/
 .hide.*
 .env*
-cache/*
+/cache/
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
