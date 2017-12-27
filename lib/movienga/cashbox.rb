@@ -4,7 +4,7 @@ require 'money'
 I18n.enforce_available_locales = false
 
 module Movienga
-  # Add cashbox to instance or class
+  # Add cashbox functionality
   module Cashbox
     CURRENCY = 'USD'.freeze
 

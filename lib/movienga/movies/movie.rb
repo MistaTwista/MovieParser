@@ -22,6 +22,7 @@ module Movienga
     end
   end
 
+  # Abstract movie class with basic functionality to access attributes.
   class Movie
     attr_reader :to_h
     include Virtus.model

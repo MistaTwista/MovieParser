@@ -2,6 +2,40 @@ require_relative 'cinema'
 require_relative '../cashbox'
 
 module Movienga
+  # Theatre give us timetable functionality.
+  #
+  #   Movienga::Theatre.new('spec/data/movies.txt') do
+  #     hall :red, title: 'Red hall', places: 100
+  #     hall :green, title: 'Green hall', places: 150
+  #
+  #     period '09:00'..'12:00' do
+  #       description 'Morning movies'
+  #       filters genre: 'Comedy', year: 1900..1980
+  #       price 10
+  #       hall :red
+  #     end
+  #
+  #    period '09:00'..'12:00' do
+  #      description 'Modern comedies'
+  #      filters genre: 'Comedy', year: 1990..2015
+  #      price 10
+  #      hall :green
+  #    end
+  #
+  #    period '14:00'..'16:30' do
+  #      description 'Modern comedies'
+  #      filters genre: 'Action', year: 2005..Time.now.year
+  #      price 10
+  #      hall :green
+  #    end
+  #
+  #    period '17:00'..'20:00' do
+  #      description 'Modern comedies'
+  #      filters genre: 'Action', year: 1990..Time.now.year
+  #      price 10
+  #      hall :green
+  #    end
+  #  end
   class Theatre < Cinema
     include Cashbox
 

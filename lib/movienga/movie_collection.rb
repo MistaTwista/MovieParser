@@ -2,7 +2,8 @@ require 'csv'
 require_relative 'movies/movie'
 
 module Movienga
-  # Class for parsing csv file and usefull filter and sort methods
+  # Presenting movie collection. You can load collection from CSV file,
+  # {#filter} and {#sort_by} collection.
   # @attr_reader [Array] movies Return movies in collection
   class MovieCollection
     include Enumerable
@@ -28,25 +29,27 @@ module Movienga
     #
     # @param field [Symbol] Movie field name
     # @return [Array] Sorted movies
+    # @example sort by title
+    #   collection.sort_by(:title)
     def sort_by(field)
       all.reject { |movie| movie.public_send(field).nil? }
          .compact.sort_by(&field)
     end
 
-    # Filter by collection
+    # Filter by collection using movies attributes
     #
     # If no block given use native movies attributes
-    # @param params [Hash] Params to filter
+    # @param attributes [Hash] Movie attributes to filter
     # @param block [Proc] Proc to use with each movie in collection
     # @example filter comedies with Brad Pitt
     #   collection.filter(genre: 'Comedy', actors: 'Brad Pitt')
     # @example filter movies with year > 2003
     #   collection.filter { |m| m.year > 2003 }
-    def filter(params = {}, &block)
+    def filter(attributes = {}, &block)
       return all.select(&block) if block_given?
 
       all.select do |movie|
-        movie.matches_all? params
+        movie.matches_all? attributes
       end
     end
 

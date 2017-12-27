@@ -2,6 +2,7 @@ require 'themoviedb-api'
 require_relative './cache'
 
 module Movienga
+  # Parse TMDB API and put data to {Cache}. Download poster to {FileCache}.
   class TMDBParser
     attr_reader :language
 

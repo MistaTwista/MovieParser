@@ -4,6 +4,7 @@ require_relative '../cashbox'
 require_relative '../errors'
 
 module Movienga
+  # Simple Cinema class with basic functionality.
   class Cinema < MovieCollection
     attr_reader :movie
 

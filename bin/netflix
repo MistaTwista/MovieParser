@@ -4,20 +4,22 @@ require 'slop'
 require_relative '../lib/movienga/cinemas/netflix'
 require_relative '../lib/movienga/version'
 
-opts = Slop.parse do |o|
-  o.string '--pay', 'Put cash to account'
-  o.string '--show', 'Select movie with filter'
-  o.string '--data', 'Path to data file'
-  o.on '--version', 'print the version' do
-    puts Movienga::VERSION
-    exit
+def parse_arguments
+  Slop.parse do |o|
+    o.string '--pay', 'Put cash to account'
+    o.string '--show', 'Select movie with filter', required: true
+    o.string '--data', 'Path to data file', required: true
+    o.on '--version', 'print the version' do
+      puts Movienga::VERSION
+      exit
+    end
   end
-end
-
-unless opts[:show] && opts[:data]
-  puts opts
+rescue Exception => e
+  puts e.message
   exit
 end
+
+opts = parse_arguments
 
 netflix = Movienga::Netflix.new(opts[:data])
 

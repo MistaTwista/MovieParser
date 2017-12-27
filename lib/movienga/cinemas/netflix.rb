@@ -4,6 +4,7 @@ require_relative '../cashbox'
 require_relative '../errors'
 
 module Movienga
+  # Helper class for metaprogramming stuff. Used with {Netflix}
   class ByGenre
     def initialize(collection)
       @collection = collection
@@ -23,6 +24,7 @@ module Movienga
     end
   end
 
+  # Helper class for metaprogramming stuff. Used with {Netflix}
   class ByCountry
     def initialize(collection)
       @collection = collection
@@ -48,13 +50,26 @@ module Movienga
     end
   end
 
+  # Imitation of online Cinema
+  #
+  # With shared cashbox ({#cash}), money account ({#pay}), flexible Filter
+  # ({#filter}), custom filters ({#define_filter}) and also a bit of
+  # metaprogramming {#by_genre} {by_country}
   class Netflix < Cinema
     extend Cashbox
 
+    # Filter movies by genre
+    #
+    # @example Filter Comedies
+    #   netflix.by_genre.comedy
     def by_genre
       ByGenre.new(self)
     end
 
+    # Filter movies by country
+    #
+    # @example Filter USA movies
+    #   netflix.by_country.usa
     def by_country
       ByCountry.new(self)
     end
@@ -66,11 +81,16 @@ module Movienga
       ancient: 1
     }.freeze
 
+    # @param filename [String] path to file.csv
+    # @param money_on_account [Number] initial amount of money on users account
     def initialize(filename, money_on_account = 0)
       super(filename)
       pay(money_on_account)
     end
 
+    # Show {#filter}ed movies
+    #
+    # Take your money, filter movie collection and show you some movie
     def show(**filters, &block)
       movies = filter(filters, &block)
       raise NothingToShow, filter unless movies.any?
@@ -79,6 +99,21 @@ module Movienga
       puts show_movie(movie)
     end
 
+    # Filter movies from collection
+    #
+    # @example with block usage
+    #   netflix.filter { |movie| movie.title.include?('Terminator') }
+    # @example with defined filter
+    #   netflix.define_filter(:early) { |movie| movie.year < 2014 }
+    #   netflix.filter(early: true)
+    # @example complex filters
+    #   netflix.define_filter(:style) { |m, genre| m.genre.include?(genre) }
+    #   netflix.define_filter(:comedies, from: :style, arg: 'Comedy') do |movie|
+    #     movie.year < 2014
+    #   end
+    #
+    #   # Movies with year < 2014 and genre 'Comedy'
+    #   netflix.filter(early: true, comedies: true)
     def filter(**filters, &block)
       filter = prepare_filter(**filters, &block)
       super { |movie| filter.call(movie) }

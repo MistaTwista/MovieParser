@@ -4,6 +4,7 @@ require 'yaml'
 require_relative './cache'
 
 module Movienga
+  # Parse budget from IMDB movie page and {Cache} it
   class IMDBParser
     def initialize(cache: Cache.new(group: 'common', file: 'imdb_data.yml'))
       @cache = cache
