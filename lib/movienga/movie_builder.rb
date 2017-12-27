@@ -4,6 +4,7 @@ require_relative 'movies/modern_movie'
 require_relative 'movies/new_movie'
 
 module Movienga
+  # Factory to build different movies using {Movie#year}
   class MovieBuilder
     def self.build_movie(movie, collection = nil)
       movie_class = case movie[:year].to_i

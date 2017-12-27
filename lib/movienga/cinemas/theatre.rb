@@ -130,6 +130,7 @@ module Movienga
     end
   end
 
+  # Represent hall for {Theatre} DSL
   class Hall
     attr_reader :title, :places
 
@@ -158,6 +159,7 @@ module Movienga
     end
   end
 
+  # Time period for {Hall}
   class TimePeriod
     attr_reader :period
 
@@ -177,6 +179,7 @@ module Movienga
     end
   end
 
+  # Represent period for {Theatre} DSL
   class Period
     attr_reader :time_range, :description, :price, :filter, :halls
 
